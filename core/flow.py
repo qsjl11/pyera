@@ -55,7 +55,8 @@ class Flow:
         self.cmd_dic = {}
         self.bind()
         self.func_generator = self.func()
-        self.core()
+        if str(self.func_generator.__class__)=="<class 'generator'>":
+            self.core()
 
     def core(self):
         try:
