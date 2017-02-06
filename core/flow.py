@@ -55,20 +55,20 @@ class Flow:
         self.cmd_dic = {}
         self.bind()
         self.func_generator = self.func()
-        if str(self.func_generator.__class__)=="<class 'generator'>":
+        if str(self.func_generator.__class__) == "<class 'generator'>":
             self.core()
 
     def core(self):
         try:
             request = self.func_generator.send(self.sendmsg)
             if request == 'str':
-                core.io.root.bind('<Return>', self.getstr)
+                core.io.bind_return(self.getstr)
 
         except StopIteration:
             pass
 
-    def getstr(self,*args):
-        self.sendmsg = core.io.order.get()
+    def getstr(self, *args):
+        self.sendmsg = core.io.getorder()
         self.bind()
         self.core()
 
@@ -80,16 +80,16 @@ class Flow:
         return cmd_str
 
     def bind(self):
-        core.io.root.bind('<Return>', self.goto_flow)
+        core.io.bind_return(self.goto_flow)
 
     def goto_flow(self, *args):
-        order = core.io.order.get()
+        order = core.io.getorder()
         if order == '':
             self.enter_default()
         if order.isdigit() and (int(order) in self.cmd_dic.keys()):
             next_flow = get_flow(self.cmd_dic[int(order)])
             next_flow.run()
-        core.io.order.set('')
+        core.io.clearorder()
 
     # 当按下回车时且没有命令时，所执行的函数
     def enter_default(self):
