@@ -10,7 +10,7 @@ def _test_(*args):
     style_def('smallsize', font='微软雅黑 10')
     style_def('bigsize', font='微软雅黑 20')
     print('显示测试\n', ('smallsize'))
-    print('显示测试\n',)
+    print('显示测试\n', )
     print('显示测试\n', ('bigsize'))
     return
 
@@ -63,6 +63,7 @@ menuother.add_command(label='设置')
 menuother.add_command(label='关于')
 menuother.add_command(label='测试')
 
+
 # #######################################################################
 # 运行函数
 def run(open_flow):
@@ -70,34 +71,55 @@ def run(open_flow):
     open_flow.run()
     root.mainloop()
 
+
 def seeend():
     textbox.see(END)
+
+
+def bind_return(func):
+    root.bind('<Return>', func)
+
 
 # #######################################################################
 # 输出格式化
 textbox.tag_configure('standard', font='微软雅黑 14')
-textbox.tag_configure('warning', font='微软雅黑 14',background='yellow')
+textbox.tag_configure('warning', font='微软雅黑 14', background='yellow')
+
 
 def print(string, style='standard'):
     textbox.insert('end', string, style)
     seeend()
+
 
 # 输出一行，next：在新的一行输出文字
 def printl(string, style='standard'):
     print(string, style)
     print('\n', style)
 
+
 def printline():
     printl('\n--------------------------------------------------------------------------------------------------------')
 
+
+def clear():
+    textbox.delete('1.0', END)
+
+
 def style_def(style_name, **style_para):
-    textbox.tag_configure(style_name,**style_para)
+    textbox.tag_configure(style_name, **style_para)
+
 
 def warn(string):
     printl('')
     printl(string, style='warning')
 
+
 # #########################################################3
 # 输入处理函数
 
+def getorder():
+    return order.get()
 
+
+def clearorder():
+    order.set('')

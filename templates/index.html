@@ -2,49 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Flask React Tutorial</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/react.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/JSXTransformer.js"></script>
+    <title>pyera</title>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.js"></script>
 </head>
 <body>
-<div id="mount-point"></div>
+<div id="textbox">
+
+</div>
+<div id="inputbox">
+    <form>
+        <input type=text size=50 name=proglang>
+        <a href=# id=process_input>
+            <button class='btn btn-default'>提交</button>
+        </a>
+    </form>
+</div>
 </body>
 
-<script type="text/jsx">
-    /** @jsx React.DOM */
-    var Input = React.createClass({
-        updateLabel: function (event) {
-            this.setState({value: event.target.value});
-        },
-        getInitialState: function () {
-            return {
-                value: ''
+<script>
+    showword = function (i, item) {
+        $.each(item, function (key, value) {
+                if (key == "text") {
+                    $("#textbox").append(value);
+                }
             }
-        },
-        componentWillMount: function () {
-            this.setState({value: this.state.value})
-        },
-        render: function () {
-            return (
-                    <div className="update-label">
-                        <input type="text" placeholder="Enter text" onChange={this.updateLabel}/>
-                        <Label value={this.state.value}/>
-                    </div>
-            )
-        }
-    });
+        );
+    };
 
-    var Label = React.createClass({
-        render: function () {
-            return (
-                    <div class="my-label">
-                        <h2>{this.props.value}</h2>
-                    </div>
-            )
-        }
-    });
+    showline = function (i, item) {
+        $.each(item, showword);
+        $("#textbox").append("<br\>");
+    };
 
-    React.render(<Input/>, document.getElementById('mount-point'));
+    show = function (data) {
+        d = eval("(" + data + ")");
+        $.each(d.content, showline);
+    };
+
+    $(document).ready(function () {
+        $('a#process_input').bind('click', function () {
+            $.getJSON('/background_process', {
+                proglang: $('input[name="proglang"]').val(),
+            }, show);
+            return false;
+        });
+    });
 </script>
 
 </html>

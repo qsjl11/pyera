@@ -85,11 +85,15 @@ class Flow:
     def goto_flow(self, *args):
         order = core.io.getorder()
         if order == '':
+            core.io.clear()
+            core.io.clearorder()
             self.enter_default()
         if order.isdigit() and (int(order) in self.cmd_dic.keys()):
+            core.io.clear()
+            core.io.clearorder()
             next_flow = get_flow(self.cmd_dic[int(order)])
             next_flow.run()
-        core.io.clearorder()
+
 
     # 当按下回车时且没有命令时，所执行的函数
     def enter_default(self):
