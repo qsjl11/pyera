@@ -17,9 +17,11 @@
         </a>
     </form>
 </div>
+<div><br/><br/></div>
 </body>
 
 <script>
+
     showword = function (i, item) {
         $.each(item, function (key, value) {
                 if (key == "text") {
@@ -29,24 +31,43 @@
         );
     };
 
-    showline = function (i, item) {
-        $.each(item, showword);
-        $("#textbox").append("<br\>");
-    };
-
     show = function (data) {
         d = eval("(" + data + ")");
-        $.each(d.content, showline);
+        $.each(d.content, showword);
+        window.scrollTo(0, document.body.scrollHeight);
+        return false
     };
 
+    run = function () {
+        $.getJSON('/run', {
+            proglang: $('input[name="proglang"]').val()
+        }, show);
+        return false;
+    };
+
+    nextflow = function () {
+        $.getJSON('/nextflow', {
+            proglang: $('input[name="proglang"]').val()
+        }, show);
+        return false;
+    };
+
+
     $(document).ready(function () {
-        $('a#process_input').bind('click', function () {
-            $.getJSON('/background_process', {
-                proglang: $('input[name="proglang"]').val(),
-            }, show);
-            return false;
-        });
+
+        $('a#process_input').unbind('click');
+        $('a#process_input').bind('click', nextflow);
+
+
+        $(document).keydown($.throttle(function () {
+                if (event.keyCode == 13) {
+                    $('a#process_input').click();
+                }
+            },300)
+        );
+
     });
+    run();
 </script>
 
 </html>

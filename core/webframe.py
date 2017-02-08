@@ -4,8 +4,7 @@ import json
 
 binding_return_func = None
 flowjson = {}
-linenumber = 0
-openflow = None
+order = 0
 
 
 # #######################################################################
@@ -15,18 +14,18 @@ def init_flowjson():
     global flowjson
     flowjson = {}
     flowjson.clear()
-    linenumber = 0
-    flowjson['content'] = [[]]
+    flowjson['content'] = []
+
 
 def text_json(string):
     re = {}
     re['type'] = 'text'
-    re['text'] = string
+    re['text'] = string.replace('\n', '<br/>')
     return re
 
 
 # #######################################################################
-# 输出格式化
+# 运行逻辑
 
 def run(flow):
     global flowjson
@@ -37,15 +36,22 @@ def run(flow):
 
 def get_json_flow():
     global flowjson
+    global binding_return_func
     init_flowjson()
     binding_return_func()
     flowstr = json.dumps(flowjson, ensure_ascii=False)
     return flowstr
 
 
+# ######################################################################
+# ######################################################################
+# ######################################################################
+# 双框架公共函数
+
 def bind_return(func):
     global binding_return_func
     binding_return_func = func
+    return
 
 
 # #######################################################################
@@ -54,19 +60,7 @@ def bind_return(func):
 
 def print(string, style='standard'):
     global flowjson
-    flowjson['content'][-1].append(text_json(string))
-
-
-# 输出一行，next：在新的一行输出文字
-def printl(string, style='standard'):
-    global flowjson
-    print(string, style)
-    flowjson['content'].append([])
-
-
-
-def printline():
-    printl('\n--------------------------------------------------------------------------------------------------------')
+    flowjson['content'].append(text_json(string))
 
 
 def clear():
@@ -79,16 +73,17 @@ def style_def(style_name, **style_para):
     # textbox.tag_configure(style_name, **style_para)
 
 
-def warn(string):
-    printl('')
-    printl(string, style='warning')
-
-
 # #########################################################3
 # 输入处理函数
 
 def getorder():
-    return 0
+    global order
+    return order
+
+
+def setorder(orderstr):
+    global order
+    order = orderstr
 
 
 def clearorder():
