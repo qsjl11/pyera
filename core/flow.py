@@ -45,6 +45,32 @@ class Flow:
         self.cmd_dic = {}
         self.runable = True
         self.sendmsg = None
+        self.innerflow_map = {}
+
+        # 预定innerflow内容
+        # 获得字符串
+        def getstr():
+            self.sendmsg = io.getorder()
+
+        self.create_innerflow('getstr', getstr)
+
+        #获得数字
+        def getint():
+            number=io.getorder()
+            if number.isdigit():
+                self.sendmsg = int(io.getorder())
+                self.run_generator()    # 需要程序自己设定返回条件，否则无线循环这一段程序
+            else:
+                io.printl('输入不是有效数字')
+
+        self.create_innerflow('getint', getint)
+
+        #等待一个回车输入
+        def waitenter():
+            return
+
+        self.create_innerflow('waitenter', waitenter)
+
         return
 
     # 该流程显示的内容
@@ -56,21 +82,25 @@ class Flow:
         self.bind()
         self.func_generator = self.func()
         if str(self.func_generator.__class__) == "<class 'generator'>":
-            self.core()
+            self.run_generator()
 
-    def core(self):
+    def run_generator(self):
+        self.bind()
         try:
             request = self.func_generator.send(self.sendmsg)
-            if request == 'str':
-                io.bind_return(self.getstr)
+            called_func = self.innerflow_map[request]
+            io.bind_return(called_func)
 
         except StopIteration:
             pass
 
-    def getstr(self, *args):
-        self.sendmsg = io.getorder()
-        self.bind()
-        self.core()
+    def create_innerflow(self, name, func, auto_reture=True):
+        def innerflow(*args):
+            func()
+            if auto_reture==True:
+                self.run_generator()
+
+        self.innerflow_map[name] = innerflow
 
     # 添加命令的方法
     def cmd(self, order_number, cmd_str, flow_name):

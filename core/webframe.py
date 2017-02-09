@@ -4,6 +4,7 @@ import json
 
 binding_return_func = None
 flowjson = {}
+flowjson['content'] = []
 order = 0
 
 
@@ -64,8 +65,8 @@ def print(string, style='standard'):
 
 
 def clear():
-    pass
-    # textbox.delete('1.0', END)
+    global flowjson
+    flowjson['clear_cmd'] = 'true'
 
 
 def style_def(style_name, **style_para):
@@ -87,5 +88,6 @@ def setorder(orderstr):
 
 
 def clearorder():
-    pass
-    # order.set('')
+    global flowjson
+    flowjson['clearorder_cmd'] = 'true'
+

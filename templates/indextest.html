@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>pyera</title>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.js"></script>
+</head>
+<body>
+<div id="textbox">
+indextest
+</div>
+<div id="inputbox">
+    <form>
+        <input type=text size=50 name=proglang>
+        <a href=# id=process_input>
+            <button class='btn btn-default'>提交</button>
+        </a>
+    </form>
+</div>
+<div><br/><br/></div>
+</body>
+
+<script>
+
+    showword = function (i, item) {
+        $.each(item, function (key, value) {
+                if (key == "text") {
+                    $("#textbox").append(value);
+                }
+            }
+        );
+    };
+
+    show = function (data) {
+        d = eval("(" + data + ")");
+        if (d.clear_cmd == 'true') {
+            $("#textbox").empty();
+        }
+        if (d.clearorder_cmd == 'true') {
+            $('input[name="proglang"]').val("")
+        }
+        $.each(d.content, showword);
+        window.scrollTo(0, document.body.scrollHeight);
+        return false
+    };
+
+    var socket = io.connect('http://127.0.0.1:5000/test');
+    socket.on('connect', function() {
+        $('input[name="proglang"]').val("to connect");
+        socket.emit('my event', {data: 'I\'m connected!'});
+    });
+
+
+</script>
+
+</html>

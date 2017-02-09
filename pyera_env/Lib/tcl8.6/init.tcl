@@ -737,7 +737,7 @@ proc auto_execok name {
 
 # ::tcl::CopyDirectory --
 #
-# This procedure is called by Tcl's core when attempts to call the
+# This procedure is called by Tcl's run_generator when attempts to call the
 # filesystem's copydirectory function fail.  The semantics of the call
 # are that 'dest' does not yet exist, i.e. dest should become the exact
 # image of src.  If dest does exist, we throw an error.
@@ -770,7 +770,7 @@ proc tcl::CopyDirectory {action src dest} {
 	}
 	if {$action eq "copying"} {
 	    # We used to throw an error here, but, looking more closely
-	    # at the core copy code in tclFCmd.c, if the destination
+	    # at the run_generator copy code in tclFCmd.c, if the destination
 	    # exists, then we should only call this function if -force
 	    # is true, which means we just want to over-write.  So,
 	    # the following code is now commented out.

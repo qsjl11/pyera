@@ -1,44 +1,27 @@
-# -*- coding: UTF-8 -*-
-import core.cfg
-
-core.cfg.platform = 'web'
-
-import core.io as io
-import core.flow
-import core.data
-
-import script.mainflow
-
-#############################################################
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
+# app.debug = True
+app.config['SECRET_KEY'] = 'windroc-nwpc-project'
 
+socketio = SocketIO(app)
 
 @app.route('/')
-def interactive():
-    return render_template('index.html')
+def get_index_page():
+    return render_template('indextest.html')
 
+@socketio.on('connect',namespace='/test')
+def test_connect():
+    print('connected')
+    emit('my response', {'data': 'Connected'})
 
-@app.route('/nextflow')
-def background_process():
-    try:
-        value = request.args.get('proglang', 0, type=str)
-        io.setorder(value)
-        jsonstr = io.get_json_flow()
-        return jsonify(jsonstr)
-    except Exception as e:
-        return str(e)
-
-
-@app.route('/run')
-def background_process_run():
-    try:
-        jsonstr = io.run(core.flow.get_flow('open_flow'))
-        return jsonify(jsonstr)
-    except Exception as e:
-        return str(e)
+@socketio.on('my event',namespace='/test')
+def handle_my_custom_event(data):
+    print('received json: ' + str(data))
+    return 1
 
 
 if __name__ == "__main__":
-    app.run()
+    print('aaa')
+    socketio.run(app)

@@ -1,0 +1,7 @@
+setup.cfg
+setup.py
+enum_compat.egg-info/PKG-INFO
+enum_compat.egg-info/SOURCES.txt
+enum_compat.egg-info/dependency_links.txt
+enum_compat.egg-info/not-zip-safe
+enum_compat.egg-info/top_level.txt
