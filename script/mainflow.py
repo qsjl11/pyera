@@ -15,7 +15,7 @@ def open_func():
 
 open_flow.func = open_func
 
-newgame_flow = core.flow.Flow('open_flow')
+newgame_flow = core.flow.Flow('newgame_flow')
 
 
 def newgame_func():

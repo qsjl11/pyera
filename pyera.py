@@ -2,6 +2,7 @@
 import core.cfg
 
 core.cfg.platform = 'win'
+import core.winframe
 import core.io
 import core.flow
 import core.data

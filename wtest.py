@@ -15,7 +15,7 @@ from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 app.debug = True
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = ''
 socketio = SocketIO(app)
 
 
@@ -25,8 +25,9 @@ def interactive():
 
 
 @socketio.on('run', namespace='/test')
-def test_connect():
+def test_connect(*args):
     try:
+        print('aaa')
         jsonstr = io.run(core.flow.get_flow('open_flow'))
         emit('game_display', jsonstr)
     except Exception as e:
