@@ -4,24 +4,44 @@
     <meta charset="UTF-8">
     <title>pyera</title>
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.js"></script>
 </head>
 <body>
 <div id="textbox">
-
 </div>
 <div id="inputbox">
-    <form>
-        <input type=text size=50 name=proglang>
-        <a href=# id=process_input>
-            <button class='btn btn-default'>提交</button>
-        </a>
-    </form>
+    <input type=text size=50 name=proglang>
+    <a href=# id=process_input>
+        <button class='btn btn-default'>提交</button>
+    </a>
 </div>
 <div><br/><br/></div>
 </body>
 
 <script>
+
+    function throttle(fn, threshhold, scope) {
+        threshhold || (threshhold = 250);
+        var last,
+            deferTimer;
+        return function () {
+            var context = scope || this;
+
+            var now = +new Date,
+                args = arguments;
+            if (last && now < last + threshhold) {
+                // hold on to it
+                clearTimeout(deferTimer);
+                deferTimer = setTimeout(function () {
+                    last = now;
+                    fn.apply(context, args);
+                }, threshhold);
+            } else {
+                last = now;
+                fn.apply(context, args);
+            }
+        };
+    }
 
     showword = function (i, item) {
         $.each(item, function (key, value) {
@@ -45,36 +65,43 @@
         return false
     };
 
+
     run = function () {
-        $.getJSON('/run', {
-            proglang: $('input[name="proglang"]').val()
-        }, show);
-        return false;
-    };
+        var socket = io.connect('http://127.0.0.1:5000/test');
 
-    nextflow = function () {
-        $.getJSON('/nextflow', {
-            proglang: $('input[name="proglang"]').val()
-        }, show);
-        return false;
-    };
+        socket.on('game_display', function (data) {
+            show(data);
+        });
 
+        socket.on('connect', function () {
+            socket.emit('run');
+            console.log('one run');
+        });
 
-    $(document).ready(function () {
 
         $('a#process_input').unbind('click');
-        $('a#process_input').bind('click', nextflow);
+        $('a#process_input').bind('click', function () {
+            socket.emit('dealorder', $('input[name="proglang"]').val());
+        });
+
+        sendorder = throttle(function () {
+            if (event.keyCode == 13) {
+                $('a#process_input').click();
+            }
+        }, 300);
+
+        $(document).keydown(sendorder);
+
+        $(window).unload(function () {
+            socket.emit('disconnect');
+        });
 
 
-        $(document).keydown($.throttle(function () {
-                if (event.keyCode == 13) {
-                    $('a#process_input').click();
-                }
-            }, 300)
-        );
+        return socket;
+    };
 
-    });
-    run();
+    run()
+
 </script>
 
 </html>

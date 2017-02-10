@@ -2,6 +2,8 @@
 
 import core.cfg
 
+sys_print=print
+
 if core.cfg.platform == 'web':
     from core.webframe import *
 
@@ -21,5 +23,8 @@ def printline():
 
 
 def warn(string):
-    printl('')
-    printl(string, style='warning')
+    if core.cfg.platform == 'win':
+        printl('')
+        printl(string, style='warning')
+    if core.cfg.platform == 'web':
+        sys_print('\n'+string+'\n')

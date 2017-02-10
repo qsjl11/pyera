@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 
+
 import json
+from flask_socketio import SocketIO, emit
 
 binding_return_func = None
 flowjson = {}
@@ -59,6 +61,13 @@ def bind_return(func):
 # 输出格式化
 
 
+def print_inmidiately(string, style='standard'):
+    jsonstr = {}
+    jsonstr['content'] = []
+    jsonstr['content'].append(text_json(string))
+    emit('game_display', json.dumps(jsonstr, ensure_ascii=False))
+
+
 def print(string, style='standard'):
     global flowjson
     flowjson['content'].append(text_json(string))
@@ -90,4 +99,3 @@ def setorder(orderstr):
 def clearorder():
     global flowjson
     flowjson['clearorder_cmd'] = 'true'
-

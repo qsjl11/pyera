@@ -93,11 +93,6 @@ def style_def(style_name, **style_para):
     textbox.tag_configure(style_name, **style_para)
 
 
-def warn(string):
-    printl('')
-    printl(string, style='warning')
-
-
 # #########################################################3
 # 输入处理函数
 

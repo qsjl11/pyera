@@ -9,6 +9,7 @@ def open_func():
     io.printline()
     yield 'waitenter'
     io.printl('pyera 启动中，准备开始游戏')
+    io.print_inmidiately('aaa')
     yield 'waitenter'
     io.print('{0}\n{1}'.format(open_flow.cmd(1, '[001] 开始游戏', 'newgame_flow'), open_flow.cmd(2, '[002] 加载游戏', None)))
 

@@ -3,13 +3,13 @@ from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 # app.debug = True
-app.config['SECRET_KEY'] = 'windroc-nwpc-project'
+app.config['SECRET_KEY'] = ''
 
 socketio = SocketIO(app)
 
 @app.route('/')
 def get_index_page():
-    return render_template('indextest.html')
+    return render_template('index.html')
 
 @socketio.on('connect',namespace='/test')
 def test_connect():
@@ -21,7 +21,10 @@ def handle_my_custom_event(data):
     print('received json: ' + str(data))
     return 1
 
+@socketio.on('disconnect',namespace='/test')
+def disconnect_func():
+    print('test websocket disconnected')
+
 
 if __name__ == "__main__":
-    print('aaa')
     socketio.run(app)
