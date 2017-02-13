@@ -69,8 +69,7 @@ def print_inmidiately(string, style='standard'):
 
 
 def print(string, style='standard'):
-    global flowjson
-    flowjson['content'].append(text_json(string))
+    print_inmidiately(string,style)
 
 
 def clear():

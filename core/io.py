@@ -23,9 +23,5 @@ def printline():
 
 
 def warn(string):
-    if core.cfg.platform == 'win':
         printl('')
         printl(string, style='warning')
-    if core.cfg.platform == 'web':
-        sys_print\
-            ('\n'+string+'\n')

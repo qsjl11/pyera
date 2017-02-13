@@ -7,7 +7,6 @@ import core.io as io
 import core.flow
 import core.data
 
-import script.mainflow
 
 #############################################################
 from flask import Flask, render_template, request, jsonify
@@ -32,6 +31,7 @@ def test_connect(*args):
     global gamebegin_flag
     try:
         if gamebegin_flag == 0:
+            import script.mainflow
             gamebegin_flag = 1
             jsonstr = io.run(core.flow.get_flow('open_flow'))
             emit('game_display', jsonstr)
