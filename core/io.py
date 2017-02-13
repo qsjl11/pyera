@@ -27,4 +27,5 @@ def warn(string):
         printl('')
         printl(string, style='warning')
     if core.cfg.platform == 'web':
-        sys_print('\n'+string+'\n')
+        sys_print\
+            ('\n'+string+'\n')
