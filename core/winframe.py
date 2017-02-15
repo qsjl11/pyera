@@ -3,6 +3,7 @@
 from tkinter import *
 from tkinter import ttk
 import sys
+import threading
 
 # 显示主框架
 root = Tk()
@@ -52,12 +53,23 @@ menuother.add_command(label='设置')
 menuother.add_command(label='关于')
 menuother.add_command(label='测试')
 
+input_event_func = None
+
+
+def send_input(*args):
+    global input_event_func
+    order = _getorder()
+    input_event_func(order)
+    clearorder()
+
+textbox.bind("<Key>", lambda e: "break")
+root.bind('<Return>', send_input)
 
 # #######################################################################
 # 运行函数
-def run(open_flow):
-    # textbox.bind("<Key>", lambda e: "break")
-    open_flow.run()
+def run(open_func):
+    flowthread = threading.Thread(target=open_func, name='flowthread')
+    flowthread.start()
     root.mainloop()
 
 
@@ -71,7 +83,8 @@ def seeend():
 # 双框架公共函数
 
 def bind_return(func):
-    root.bind('<Return>', func)
+    global input_event_func
+    input_event_func = func
 
 
 # #######################################################################
@@ -96,7 +109,7 @@ def style_def(style_name, **style_para):
 # #########################################################3
 # 输入处理函数
 
-def getorder():
+def _getorder():
     return order.get()
 
 

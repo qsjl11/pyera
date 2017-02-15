@@ -2,12 +2,23 @@
 
 
 import json
-from flask_socketio import SocketIO, emit
+
+from flask import Flask, render_template, request, jsonify
+from flask_socketio import SocketIO, emit, disconnect
 
 binding_return_func = None
 flowjson = {}
 flowjson['content'] = []
 order = 0
+input_event_func = None
+
+app = Flask(__name__)
+app.debug = True
+app.config['SECRET_KEY'] = ''
+socketio = SocketIO(app, async_mode='threading')
+flowthread = None
+
+open_func = None
 
 
 # #######################################################################
@@ -15,9 +26,14 @@ order = 0
 
 def init_flowjson():
     global flowjson
-    flowjson = {}
     flowjson.clear()
     flowjson['content'] = []
+
+
+def new_json():
+    flowjson = {}
+    flowjson['content'] = []
+    return flowjson
 
 
 def text_json(string):
@@ -30,20 +46,17 @@ def text_json(string):
 # #######################################################################
 # 运行逻辑
 
-def run(flow):
-    global flowjson
-    init_flowjson()
-    flow.run()
-    return json.dumps(flowjson, ensure_ascii=False)
+def run(open_flow):
+    global open_func
+    open_func = open_flow
+    socketio.run(app)
 
 
-def get_json_flow():
-    global flowjson
-    global binding_return_func
-    init_flowjson()
-    binding_return_func()
-    flowstr = json.dumps(flowjson, ensure_ascii=False)
-    return flowstr
+def send_input(*args):
+    global input_event_func
+    order = getorder()
+    input_event_func(order)
+    clearorder()
 
 
 # ######################################################################
@@ -52,24 +65,19 @@ def get_json_flow():
 # 双框架公共函数
 
 def bind_return(func):
-    global binding_return_func
-    binding_return_func = func
+    global input_event_func
+    input_event_func = func
     return
 
 
 # #######################################################################
 # 输出格式化
 
-
-def print_inmidiately(string, style='standard'):
-    jsonstr = {}
-    jsonstr['content'] = []
-    jsonstr['content'].append(text_json(string))
-    emit('game_display', json.dumps(jsonstr, ensure_ascii=False))
-
-
+# @copy_current_request_context
 def print(string, style='standard'):
-    print_inmidiately(string,style)
+    jsonstr = new_json()
+    jsonstr['content'].append(text_json(string))
+    socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
 def clear():
@@ -96,5 +104,38 @@ def setorder(orderstr):
 
 
 def clearorder():
-    global flowjson
-    flowjson['clearorder_cmd'] = 'true'
+    jsonstr = new_json()
+    jsonstr['clearorder_cmd'] = 'true'
+    emit('game_display', json.dumps(jsonstr, ensure_ascii=False))
+
+
+####################################################################
+####################################################################
+
+
+@app.route('/')
+def interactive():
+    return render_template('index.html')
+
+
+@socketio.on('run', namespace='/test')
+def test_connect(*args):
+    global gamebegin_flag
+    global flowthread
+    global open_func
+
+    try:
+        if flowthread == None:
+            flowthread = socketio.start_background_task(target=open_func)
+
+    except Exception as e:
+        return str(e)
+
+
+@socketio.on('dealorder', namespace='/test')
+def test_message(value):
+    try:
+        setorder(value)
+        send_input()
+    except Exception as e:
+        return str(e)
