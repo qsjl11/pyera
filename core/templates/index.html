@@ -43,13 +43,42 @@
         };
     }
 
+    showtext = function (item) {
+        $("#textbox").append(item.text);
+    };
+
+    showcmd = function (item) {
+        appendstr = "<a class='cmd' href='javascript:void(0)' id=" + item.num + ">"
+            + item.text + "</a>";
+        idstr = "#" + item.num;
+        $("#textbox").append(appendstr);
+        $(idstr).bind("click", function () {
+            cmdsendorder(item.num)
+        });
+    };
+
+    cmdsendorder = function (number) {
+        $('input[name="proglang"]').val(number);
+        socket_global.emit('dealorder', $('input[name="proglang"]').val());
+    };
     showword = function (i, item) {
-        $.each(item, function (key, value) {
-                if (key == "text") {
-                    $("#textbox").append(value);
-                }
+        if (item.type == "text")
+            showtext(item);
+        if (item.type == "cmd")
+            showcmd(item);
+    };
+
+    clearcmd_func = function (numbers) {
+        if (numbers == "all") {
+            $(".cmd").unbind('click');
+            $(".cmd").attr("class","uncmd");
+        } else {
+            for (num in numbers){
+                idstr="#"+ num;
+                $(".cmd#idstr").unbind('click');
+                $(".cmd#idstr").attr("class","uncmd");
             }
-        );
+        }
     };
 
     show = function (data) {
@@ -60,15 +89,18 @@
         if (d.clearorder_cmd == 'true') {
             $('input[name="proglang"]').val("")
         }
+        if (d.clearcmd_cmd)
+            clearcmd_func(d.clearcmd_cmd);
         $.each(d.content, showword);
         window.scrollTo(0, document.body.scrollHeight);
         return false
     };
 
+    var socket_global = 0;
 
     run = function () {
         var socket = io.connect('http://127.0.0.1:5000/test');
-
+        socket_global = socket;
         socket.on('game_display', function (data) {
             show(data);
         });

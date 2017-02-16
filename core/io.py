@@ -49,6 +49,5 @@ def warn(string):
     sys_print(string)
 
 
-# def clearorder():
-#     order_swap = None
+
 

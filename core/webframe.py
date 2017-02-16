@@ -43,6 +43,14 @@ def text_json(string):
     return re
 
 
+def cmd_json(cmd_str, cmd_num):
+    re = {}
+    re['type'] = 'cmd'
+    re['text'] = cmd_str.replace('\n', '<br/>')
+    re['num'] = cmd_num
+    return re
+
+
 # #######################################################################
 # 运行逻辑
 
@@ -107,6 +115,25 @@ def clearorder():
     jsonstr = new_json()
     jsonstr['clearorder_cmd'] = 'true'
     emit('game_display', json.dumps(jsonstr, ensure_ascii=False))
+
+
+# ############################################################
+
+# 命令生成函数
+def io_print_cmd(cmd_str, cmd_number):
+    jsonstr = new_json()
+    jsonstr['content'].append(cmd_json(cmd_str, cmd_number))
+    socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
+
+
+# 清除命令函数
+def io_clear_cmd(*cmd_numbers):
+    jsonstr = new_json()
+    if cmd_numbers:
+        jsonstr['clearcmd_cmd'] = cmd_numbers
+    else:
+        jsonstr['clearcmd_cmd'] = 'all'
+    socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
 ####################################################################

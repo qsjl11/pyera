@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter import ttk
 import sys
 import threading
+import uuid
 
 # 显示主框架
 root = Tk()
@@ -62,8 +63,10 @@ def send_input(*args):
     input_event_func(order)
     clearorder()
 
+
 textbox.bind("<Key>", lambda e: "break")
 root.bind('<Return>', send_input)
+
 
 # #######################################################################
 # 运行函数
@@ -90,6 +93,7 @@ def bind_return(func):
 # #######################################################################
 # 输出格式化
 textbox.tag_configure('standard', font='微软雅黑 14')
+textbox.tag_configure('bold', font='微软雅黑 14 bold')
 textbox.tag_configure('warning', font='微软雅黑 14', background='yellow')
 
 
@@ -119,3 +123,49 @@ def setorder(orderstr):
 
 def clearorder():
     order.set('')
+
+
+# ############################################################
+
+cmd_tag_map = {}
+
+
+# 命令生成函数
+def io_print_cmd(cmd_str, cmd_number):
+    global cmd_tag_map
+    cmd_tagname = str(uuid.uuid1())
+    textbox.tag_configure(cmd_tagname, font='微软雅黑 14', foreground='#001466')
+    if cmd_number in cmd_tag_map:
+        io_clear_cmd(cmd_number)
+    cmd_tag_map[cmd_number] = cmd_tagname
+
+    def send_cmd(*args):
+        order.set(cmd_number)
+        send_input()
+
+    def enter_func(*args):
+        textbox.tag_configure(cmd_tagname, font='微软雅黑 14', foreground='#CC0029')
+
+    def leave_func(*args):
+        textbox.tag_configure(cmd_tagname, font='微软雅黑 14', foreground='#001466')
+
+    textbox.tag_bind(cmd_tagname, '<1>', send_cmd)
+    textbox.tag_bind(cmd_tagname, '<Enter>', enter_func)
+    textbox.tag_bind(cmd_tagname, '<Leave>', leave_func)
+    print(cmd_str, style=cmd_tagname)
+
+
+# 清除命令函数
+def io_clear_cmd(*cmd_numbers):
+    global cmd_tag_map
+    if cmd_numbers:
+        for num in cmd_numbers:
+            if cmd_numbers in cmd_tag_map:
+                textbox.tag_add('standard',cmd_tag_map[num]+'.first',cmd_tag_map[num]+'.last')
+                textbox.tag_delete(cmd_tag_map[num])
+                cmd_tag_map.pop(num)
+    else:
+        for num in cmd_tag_map.keys():
+            textbox.tag_add('standard', cmd_tag_map[num] + '.first', cmd_tag_map[num] + '.last')
+            textbox.tag_delete(cmd_tag_map[num])
+        cmd_tag_map.clear()

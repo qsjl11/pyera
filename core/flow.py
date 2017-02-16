@@ -28,38 +28,39 @@ def get_flow(flow_name):
 
 # 管理命令
 cmd_map = {}
-cmd_clear_callback_func = None
 
 
-def cmd(cmd_str, cmd_number, cmd_func, *args, **kw):
+def print_cmd(cmd_str, cmd_number, cmd_func, arg=()):
+    '''arg is tuple contain args which cmd_func could be used'''
+
     def run_func():
-        cmd_func(*args, **kw)
+        cmd_func(*arg)
 
     cmd_map[cmd_number] = run_func
+    io.io_print_cmd(cmd_str, cmd_number)
     return cmd_str
 
 
-def cmd_gotoflowbyname(cmd_str, cmd_number, cmd_flowname, *args, **kw):
+def cmd_gotoflowbyname(cmd_str, cmd_number, cmd_flowname, arg=()):
     if not isinstance(cmd_flowname, str):
         io.warn(cmd_flowname + ' :不是有效的flow名称，flowname应为字符串')
         return
 
-    def gotoflow(*_args, **_kw):
+    def gotoflow(_arg):
         flow_func = get_flow(cmd_flowname)
-        flow_func(*_args, **_kw)
+        flow_func(*_arg)
 
-    cmd(cmd_str, cmd_number, gotoflow, *args, *kw)
-
-
-def cmd_clear():
-    global cmd_clear_callback_func
-    cmd_map.clear()
-    cmd_clear_callback_func()
+    print_cmd(cmd_str, cmd_number, gotoflow, arg)
 
 
-def _cmd_clear_callback(func):
-    global cmd_clear_callback_func
-    cmd_clear_callback_func = func
+def cmd_clear(*number):
+    if number:
+        for num in number:
+            cmd_map.pop(num)
+            io.io_clear_cmd(num)
+    else:
+        cmd_map.clear()
+        io.io_clear_cmd()
 
 
 def _cmd_deal(order_number):
@@ -71,11 +72,13 @@ def _cmd_valid(order_number):
 
 
 # 处理输入
-def order_deal(flag='order'):
+def order_deal(flag='order', print_order=True):
     while True:
         io._get_input_event().clear()
         io._get_input_event().wait()
         order = io.getorder()
+        if print_order == True:
+            io.print(order)
         if flag == 'order':
             if order.isdigit() and _cmd_valid(int(order)):
                 _cmd_deal(int(order))
@@ -85,17 +88,17 @@ def order_deal(flag='order'):
             return io.getorder()
 
 
-def askfor_str(unnull_str_flag=True):
+def askfor_str(donot_return_null_str=True, print_order=False):
     while True:
-        order = order_deal('str')
-        if unnull_str_flag == True and order != '':
+        order = order_deal('str', print_order)
+        if donot_return_null_str == True and order != '':
             return order
-        elif unnull_str_flag == False:
+        elif donot_return_null_str == False:
             return order
 
 
-def askfor_int():
+def askfor_int(print_order=False):
     while True:
-        order = order_deal('str')
+        order = order_deal('str', print_order)
         if order.isdigit():
             return int(order)
