@@ -102,7 +102,7 @@ def print(string, style='standard'):
     seeend()
 
 
-def clear():
+def clear_screen():
     io_clear_cmd()
     textbox.delete('1.0', END)
 

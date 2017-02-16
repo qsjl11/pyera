@@ -88,9 +88,11 @@ def print(string, style='standard'):
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
-def clear():
-    global flowjson
-    flowjson['clear_cmd'] = 'true'
+def clear_screen():
+    # io_clear_cmd()
+    jsonstr = new_json()
+    jsonstr['clear_cmd'] = 'true'
+    socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
 def style_def(style_name, **style_para):
@@ -114,7 +116,7 @@ def setorder(orderstr):
 def clearorder():
     jsonstr = new_json()
     jsonstr['clearorder_cmd'] = 'true'
-    emit('game_display', json.dumps(jsonstr, ensure_ascii=False))
+    socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
 # ############################################################

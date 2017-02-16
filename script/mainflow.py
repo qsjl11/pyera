@@ -20,4 +20,5 @@ def newgame_func():
     io.printl('请输入名字:')
     name = flow.askfor_str()
     io.printl('取名字为：' + str(name))
+    io.clear_screen()
 
