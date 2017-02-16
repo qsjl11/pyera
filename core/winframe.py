@@ -103,6 +103,7 @@ def print(string, style='standard'):
 
 
 def clear():
+    io_clear_cmd()
     textbox.delete('1.0', END)
 
 
