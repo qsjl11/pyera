@@ -1,29 +1,28 @@
 import core.io as io
-import core.flow
-import core.data
-
-open_flow = core.flow.Flow('open_flow')
+import core.flow as flow
+from core.data import gamedata
 
 
+@flow.create_flow(flow_name='open_flow')
 def open_func():
     io.printline()
-    yield 'waitenter'
     io.printl('pyera 启动中，准备开始游戏')
-    io.print('aaa')
-    yield 'waitenter'
-    io.print('{0}\n{1}'.format(open_flow.cmd(1, '[001] 开始游戏', 'newgame_flow'), open_flow.cmd(2, '[002] 加载游戏', None)))
+    io.printl('pyera 启动中，准备开始游戏')
+    flow.print_cmd('[001] 开始游戏', 1, newgame_func)
+    io.print('\n')
+    io.printl('pyera 启动中，准备开始游戏')
+    io.printl(gamedata()['test']['firstName'])
+    io.printl(str(gamedata()))
 
+    flow.order_deal()
 
-open_flow.func = open_func
-
-newgame_flow = core.flow.Flow('open_flow')
 
 
 def newgame_func():
+    flow.cmd_clear()
     io.printline()
     io.printl('请输入名字:')
-    name = yield 'getint'
+    name = flow.askfor_str()
     io.printl('取名字为：' + str(name))
+    io.clear_screen()
 
-
-newgame_flow.func = newgame_func

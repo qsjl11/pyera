@@ -3,6 +3,8 @@
 from tkinter import *
 from tkinter import ttk
 import sys
+import threading
+import uuid
 
 # 显示主框架
 root = Tk()
@@ -52,12 +54,25 @@ menuother.add_command(label='设置')
 menuother.add_command(label='关于')
 menuother.add_command(label='测试')
 
+input_event_func = None
+
+
+def send_input(*args):
+    global input_event_func
+    order = _getorder()
+    input_event_func(order)
+    clearorder()
+
+
+textbox.bind("<Key>", lambda e: "break")
+root.bind('<Return>', send_input)
+
 
 # #######################################################################
 # 运行函数
-def run(open_flow):
-    # textbox.bind("<Key>", lambda e: "break")
-    open_flow.run()
+def run(open_func):
+    flowthread = threading.Thread(target=open_func, name='flowthread')
+    flowthread.start()
     root.mainloop()
 
 
@@ -71,12 +86,14 @@ def seeend():
 # 双框架公共函数
 
 def bind_return(func):
-    root.bind('<Return>', func)
+    global input_event_func
+    input_event_func = func
 
 
 # #######################################################################
 # 输出格式化
 textbox.tag_configure('standard', font='微软雅黑 14')
+textbox.tag_configure('bold', font='微软雅黑 14 bold')
 textbox.tag_configure('warning', font='微软雅黑 14', background='yellow')
 
 
@@ -85,7 +102,8 @@ def print(string, style='standard'):
     seeend()
 
 
-def clear():
+def clear_screen():
+    io_clear_cmd()
     textbox.delete('1.0', END)
 
 
@@ -96,7 +114,7 @@ def style_def(style_name, **style_para):
 # #########################################################3
 # 输入处理函数
 
-def getorder():
+def _getorder():
     return order.get()
 
 
@@ -106,3 +124,49 @@ def setorder(orderstr):
 
 def clearorder():
     order.set('')
+
+
+# ############################################################
+
+cmd_tag_map = {}
+
+
+# 命令生成函数
+def io_print_cmd(cmd_str, cmd_number):
+    global cmd_tag_map
+    cmd_tagname = str(uuid.uuid1())
+    textbox.tag_configure(cmd_tagname, font='微软雅黑 14', foreground='#001466')
+    if cmd_number in cmd_tag_map:
+        io_clear_cmd(cmd_number)
+    cmd_tag_map[cmd_number] = cmd_tagname
+
+    def send_cmd(*args):
+        order.set(cmd_number)
+        send_input()
+
+    def enter_func(*args):
+        textbox.tag_configure(cmd_tagname, font='微软雅黑 14', foreground='#CC0029')
+
+    def leave_func(*args):
+        textbox.tag_configure(cmd_tagname, font='微软雅黑 14', foreground='#001466')
+
+    textbox.tag_bind(cmd_tagname, '<1>', send_cmd)
+    textbox.tag_bind(cmd_tagname, '<Enter>', enter_func)
+    textbox.tag_bind(cmd_tagname, '<Leave>', leave_func)
+    print(cmd_str, style=cmd_tagname)
+
+
+# 清除命令函数
+def io_clear_cmd(*cmd_numbers):
+    global cmd_tag_map
+    if cmd_numbers:
+        for num in cmd_numbers:
+            if cmd_numbers in cmd_tag_map:
+                textbox.tag_add('standard',cmd_tag_map[num]+'.first',cmd_tag_map[num]+'.last')
+                textbox.tag_delete(cmd_tag_map[num])
+                cmd_tag_map.pop(num)
+    else:
+        for num in cmd_tag_map.keys():
+            textbox.tag_add('standard', cmd_tag_map[num] + '.first', cmd_tag_map[num] + '.last')
+            textbox.tag_delete(cmd_tag_map[num])
+        cmd_tag_map.clear()
