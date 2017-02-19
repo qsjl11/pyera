@@ -19,6 +19,7 @@ socketio = SocketIO(app, async_mode='threading')
 flowthread = None
 
 open_func = None
+sysprint=print
 
 
 # #######################################################################

@@ -1,6 +1,6 @@
 import core.io as io
 import core.flow as flow
-import core.data
+from core.data import gamedata
 
 
 @flow.create_flow(flow_name='open_flow')
@@ -10,6 +10,10 @@ def open_func():
     io.printl('pyera 启动中，准备开始游戏')
     flow.print_cmd('[001] 开始游戏', 1, newgame_func)
     io.print('\n')
+    io.printl('pyera 启动中，准备开始游戏')
+    io.printl(gamedata()['test']['firstName'])
+    io.printl(str(gamedata()))
+
     flow.order_deal()
 
 

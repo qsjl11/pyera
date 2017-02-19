@@ -36,7 +36,7 @@ def _get_input_event():
 
 # 输出一行，next：在新的一行输出文字
 def printl(string, style='standard'):
-    print(string, style)
+    print(str(string), style)
     print('\n')
 
 
