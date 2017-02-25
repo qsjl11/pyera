@@ -30,13 +30,16 @@ def get_flow(flow_name):
 cmd_map = {}
 
 
-def print_cmd(cmd_str, cmd_number, cmd_func, arg=()):
-    '''arg is tuple contain args which cmd_func could be used'''
-
+def bind_cmd(cmd_number, cmd_func, arg=()):
     def run_func():
         cmd_func(*arg)
 
     cmd_map[cmd_number] = run_func
+
+
+def print_cmd(cmd_str, cmd_number, cmd_func, arg=()):
+    '''arg is tuple contain args which cmd_func could be used'''
+    bind_cmd(cmd_number, cmd_func, arg)
     io.io_print_cmd(cmd_str, cmd_number)
     return cmd_str
 

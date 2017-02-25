@@ -6,6 +6,7 @@
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.js"></script>
 </head>
+<style></style>
 <body>
 <div id="textbox">
 </div>
@@ -44,7 +45,7 @@
     }
 
     showtext = function (item) {
-        $("#textbox").append(item.text);
+        $("#textbox").append('<span>'+item.text+'</span>');
     };
 
     showcmd = function (item) {

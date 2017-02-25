@@ -3,9 +3,7 @@ import core.cfg
 
 core.cfg.platform = 'web'
 
-import core.io as io
-import core.flow
-import core.data
+import core.game
 import script.mainflow
 
 

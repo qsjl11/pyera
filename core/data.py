@@ -59,4 +59,3 @@ def load(filename):
     except FileNotFoundError:
         print(filepath+'  没有该存档文件')
 
-init()

@@ -80,6 +80,10 @@ def seeend():
     textbox.see(END)
 
 
+def set_background(color):
+    textbox.configure(background=color)
+
+
 # ######################################################################
 # ######################################################################
 # ######################################################################
@@ -92,9 +96,7 @@ def bind_return(func):
 
 # #######################################################################
 # 输出格式化
-textbox.tag_configure('standard', font='微软雅黑 14')
-textbox.tag_configure('bold', font='微软雅黑 14 bold')
-textbox.tag_configure('warning', font='微软雅黑 14', background='yellow')
+# textbox.tag_configure('standard', font='微软雅黑 14', foreground='#C8C8C8')
 
 
 def print(string, style='standard'):
@@ -107,8 +109,10 @@ def clear_screen():
     textbox.delete('1.0', END)
 
 
-def style_def(style_name, **style_para):
-    textbox.tag_configure(style_name, **style_para)
+def frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, slant):
+    # include foreground, background, font, size, bold, underline, slant
+    font_str=font+' '+fontsize+['',' bold'][bold==True]+['',' underline'][underline==True]+['',' slant'][slant==True]
+    textbox.tag_configure(style_name, foreground=foreground, background=background, font=font_str)
 
 
 # #########################################################3
@@ -162,7 +166,7 @@ def io_clear_cmd(*cmd_numbers):
     if cmd_numbers:
         for num in cmd_numbers:
             if cmd_numbers in cmd_tag_map:
-                textbox.tag_add('standard',cmd_tag_map[num]+'.first',cmd_tag_map[num]+'.last')
+                textbox.tag_add('standard', cmd_tag_map[num] + '.first', cmd_tag_map[num] + '.last')
                 textbox.tag_delete(cmd_tag_map[num])
                 cmd_tag_map.pop(num)
     else:

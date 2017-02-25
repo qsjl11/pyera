@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import core.io as io
 import core.flow as flow
 from core.data import gamedata
@@ -6,7 +7,7 @@ from core.data import gamedata
 @flow.create_flow(flow_name='open_flow')
 def open_func():
     io.printline()
-    io.printl('pyera 启动中，准备开始游戏')
+    io.print('pyera 启动中，准备开始游戏')
     io.printl('pyera 启动中，准备开始游戏')
     flow.print_cmd('[001] 开始游戏', 1, newgame_func)
     io.print('\n')
