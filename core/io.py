@@ -57,15 +57,16 @@ _fontsize = '14'
 
 
 def style_def(style_name, foreground=_foreground, background=_background, font=_font, fontsize=_fontsize, bold=False,
-              underline=False, slant=False):
+              underline=False, italic=False):
     # include foreground, background, font, size, bold, underline, slant
-    frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, slant)
+    frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic)
 
 
-def init_style(foreground_c, background_c, button_c, font, font_size):
+def init_style(foreground_c, background_c, onbutton_c, font, font_size):
     global style_def
     def new_style_def(style_name, foreground=foreground_c, background=background_c, font=font, fontsize=font_size,
-                      bold=False, underline=False, slant=False):
-        frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, slant)
+                      bold=False, underline=False, italic=False):
+        frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic)
     style_def=new_style_def
     style_def('standard')
+    style_def('onbutton', foreground=onbutton_c)

@@ -5,8 +5,9 @@
     <title>pyera</title>
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.js"></script>
+    <style type='text/css'></style>
 </head>
-<style></style>
+
 <body>
 <div id="textbox">
 </div>
@@ -45,16 +46,24 @@
     }
 
     showtext = function (item) {
-        $("#textbox").append('<span>'+item.text+'</span>');
+        $("#textbox").append('<span class='+item.style+'>' + item.text + '</span>');
     };
 
     showcmd = function (item) {
-        appendstr = "<a class='cmd' href='javascript:void(0)' id=" + item.num + ">"
-            + item.text + "</a>";
-        idstr = "#" + item.num;
+        var appendstr = "<span class='cmd' id=" + item.num + ">"
+            + item.text + "</span>";
+        var idstr = "#" + item.num;
         $("#textbox").append(appendstr);
+        $(idstr).addClass(item.normal_style);
         $(idstr).bind("click", function () {
             cmdsendorder(item.num)
+        });
+        $(idstr).hover(function () {
+            $(idstr).removeClass(item.normal_style);
+            $(idstr).addClass(item.on_style);
+        }, function () {
+            $(idstr).removeClass(item.on_style);
+            $(idstr).addClass(item.normal_style);
         });
     };
 
@@ -71,15 +80,40 @@
 
     clearcmd_func = function (numbers) {
         if (numbers == "all") {
-            $(".cmd").unbind('click');
-            $(".cmd").attr("class","uncmd");
+            $(".cmd").unbind('click mouseenter mouseleave');
+            $(".cmd").attr("id", "");
+            $(".cmd").attr("class", "standard");
         } else {
-            for (num in numbers){
-                idstr="#"+ num;
-                $(".cmd#idstr").unbind('click');
-                $(".cmd#idstr").attr("class","uncmd");
-            }
+            idstr = "#" + numbers;
+            $(".cmd" + idstr).unbind('click mouseenter mouseleave');
+            $(".cmd" + idstr).attr("class", "standard");
         }
+    };
+
+    set_bgcolor = function (color) {
+        $("body").attr("bgcolor", color);
+    };
+
+    function addCSSRule(sheet, selector, rules, index) {
+        if ("insertRule" in sheet) {
+            sheet.insertRule(selector + "{" + rules + "}", index);
+        }
+        else if ("addRule" in sheet) {
+            sheet.addRule(selector, rules, index);
+        }
+    }
+
+    set_style = function (style) {
+        s = document.getElementsByName('style').sheet;
+        rule_str = " background-color:" + style.background + ";color:" + style.foreground + ";font-family:" + style.font +
+            ";font-size:" + style.fontsize + "px";
+        if (style.bold == true)
+            rule_str = rule_str + ";font-weight:bold";
+        if (style.underline == true)
+            rule_str = rule_str + ";text-decoration:underline";
+        if (style.italic == true)
+            rule_str = rule_str + ";font-style:italic";
+        addCSSRule(document.styleSheets[0], "." + style.style_name, rule_str);
     };
 
     show = function (data) {
@@ -92,6 +126,10 @@
         }
         if (d.clearcmd_cmd)
             clearcmd_func(d.clearcmd_cmd);
+        if (d.bgcolor)
+            set_bgcolor(d.bgcolor);
+        if (d.set_style)
+            set_style(d.set_style);
         $.each(d.content, showword);
         window.scrollTo(0, document.body.scrollHeight);
         return false

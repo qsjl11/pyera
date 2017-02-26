@@ -31,29 +31,20 @@ cmd_map = {}
 
 
 def bind_cmd(cmd_number, cmd_func, arg=()):
+    if not isinstance(arg, tuple):
+        arg = (arg,)
+
     def run_func():
         cmd_func(*arg)
 
     cmd_map[cmd_number] = run_func
 
 
-def print_cmd(cmd_str, cmd_number, cmd_func, arg=()):
+def print_cmd(cmd_str, cmd_number, cmd_func, arg=(), normal_style='standard', on_style='onbutton'):
     '''arg is tuple contain args which cmd_func could be used'''
     bind_cmd(cmd_number, cmd_func, arg)
-    io.io_print_cmd(cmd_str, cmd_number)
+    io.io_print_cmd(cmd_str, cmd_number, normal_style, on_style)
     return cmd_str
-
-
-def cmd_gotoflowbyname(cmd_str, cmd_number, cmd_flowname, arg=()):
-    if not isinstance(cmd_flowname, str):
-        io.warn(cmd_flowname + ' :不是有效的flow名称，flowname应为字符串')
-        return
-
-    def gotoflow(_arg):
-        flow_func = get_flow(cmd_flowname)
-        flow_func(*_arg)
-
-    print_cmd(cmd_str, cmd_number, gotoflow, arg)
 
 
 def cmd_clear(*number):

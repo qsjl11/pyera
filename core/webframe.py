@@ -37,18 +37,33 @@ def new_json():
     return flowjson
 
 
-def text_json(string):
+def text_json(string, style):
     re = {}
     re['type'] = 'text'
     re['text'] = string.replace('\n', '<br/>')
+    re['style']=style
     return re
 
 
-def cmd_json(cmd_str, cmd_num):
+def cmd_json(cmd_str, cmd_num, normal_style, on_style):
     re = {}
     re['type'] = 'cmd'
     re['text'] = cmd_str.replace('\n', '<br/>')
     re['num'] = cmd_num
+    re['normal_style']=normal_style
+    re['on_style']=on_style
+    return re
+
+def style_json(style_name, foreground, background, font, fontsize, bold, underline, italic):
+    re={}
+    re['style_name']=style_name
+    re['foreground']=foreground
+    re['background'] = background
+    re['font'] = font
+    re['fontsize'] = fontsize
+    re['bold'] = bold
+    re['underline'] = underline
+    re['italic'] = italic
     return re
 
 
@@ -67,6 +82,10 @@ def send_input(*args):
     input_event_func(order)
     clearorder()
 
+def set_background(color):
+    jsonstr = new_json()
+    jsonstr['bgcolor']=color
+    socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 # ######################################################################
 # ######################################################################
@@ -85,7 +104,7 @@ def bind_return(func):
 # @copy_current_request_context
 def print(string, style='standard'):
     jsonstr = new_json()
-    jsonstr['content'].append(text_json(string))
+    jsonstr['content'].append(text_json(string, style))
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
@@ -96,9 +115,10 @@ def clear_screen():
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
-def style_def(style_name, **style_para):
-    pass
-    # textbox.tag_configure(style_name, **style_para)
+def frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic):
+    jsonstr = new_json()
+    jsonstr['set_style'] = style_json(style_name, foreground, background, font, fontsize, bold, underline, italic)
+    socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
 # #########################################################3
@@ -123,9 +143,9 @@ def clearorder():
 # ############################################################
 
 # 命令生成函数
-def io_print_cmd(cmd_str, cmd_number):
+def io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutton'):
     jsonstr = new_json()
-    jsonstr['content'].append(cmd_json(cmd_str, cmd_number))
+    jsonstr['content'].append(cmd_json(cmd_str, cmd_number, normal_style, on_style))
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
@@ -169,3 +189,7 @@ def test_message(value):
         send_input()
     except Exception as e:
         return str(e)
+
+@socketio.on('connect', namespace='/test')
+def test_connect():
+    sysprint('connected')

@@ -28,11 +28,6 @@ s_vertical = ttk.Scrollbar(mainframe, orient=VERTICAL, command=textbox.yview)
 textbox.configure(yscrollcommand=s_vertical.set)
 s_vertical.grid(column=1, row=0, sticky=(N, E, S))
 
-# 水平滚动条
-# s_horizontal = ttk.Scrollbar(mainframe, orient=HORIZONTAL, command=textbox.xview)
-# textbox.configure(xscrollcommand=s_horizontal.set)
-# s_horizontal.grid(column=0, row=2, sticky=(W, E, S))
-
 # 输入栏
 order = StringVar()
 inputbox = ttk.Entry(mainframe, textvariable=order)
@@ -96,10 +91,11 @@ def bind_return(func):
 
 # #######################################################################
 # 输出格式化
-# textbox.tag_configure('standard', font='微软雅黑 14', foreground='#C8C8C8')
+
+sysprint = print
 
 
-def print(string, style='standard'):
+def print(string, style=('standard')):
     textbox.insert('end', string, style)
     seeend()
 
@@ -109,9 +105,10 @@ def clear_screen():
     textbox.delete('1.0', END)
 
 
-def frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, slant):
+def frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic):
     # include foreground, background, font, size, bold, underline, slant
-    font_str=font+' '+fontsize+['',' bold'][bold==True]+['',' underline'][underline==True]+['',' slant'][slant==True]
+    font_str = font + ' ' + fontsize + ['', ' bold'][bold == True] + ['', ' underline'][underline == True] + \
+               ['', ' italic'][italic == True]
     textbox.tag_configure(style_name, foreground=foreground, background=background, font=font_str)
 
 
@@ -136,10 +133,10 @@ cmd_tag_map = {}
 
 
 # 命令生成函数
-def io_print_cmd(cmd_str, cmd_number):
+def io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutton'):
     global cmd_tag_map
     cmd_tagname = str(uuid.uuid1())
-    textbox.tag_configure(cmd_tagname, font='微软雅黑 14', foreground='#001466')
+    textbox.tag_configure(cmd_tagname)
     if cmd_number in cmd_tag_map:
         io_clear_cmd(cmd_number)
     cmd_tag_map[cmd_number] = cmd_tagname
@@ -149,15 +146,17 @@ def io_print_cmd(cmd_str, cmd_number):
         send_input()
 
     def enter_func(*args):
-        textbox.tag_configure(cmd_tagname, font='微软雅黑 14', foreground='#CC0029')
+        textbox.tag_remove(normal_style, textbox.tag_ranges(cmd_tagname)[0], textbox.tag_ranges(cmd_tagname)[1])
+        textbox.tag_add(on_style, textbox.tag_ranges(cmd_tagname)[0], textbox.tag_ranges(cmd_tagname)[1])
 
     def leave_func(*args):
-        textbox.tag_configure(cmd_tagname, font='微软雅黑 14', foreground='#001466')
+        textbox.tag_add(normal_style, textbox.tag_ranges(cmd_tagname)[0], textbox.tag_ranges(cmd_tagname)[1])
+        textbox.tag_remove(on_style, textbox.tag_ranges(cmd_tagname)[0], textbox.tag_ranges(cmd_tagname)[1])
 
     textbox.tag_bind(cmd_tagname, '<1>', send_cmd)
     textbox.tag_bind(cmd_tagname, '<Enter>', enter_func)
     textbox.tag_bind(cmd_tagname, '<Leave>', leave_func)
-    print(cmd_str, style=cmd_tagname)
+    print(cmd_str, style=(cmd_tagname, normal_style))
 
 
 # 清除命令函数
@@ -165,12 +164,20 @@ def io_clear_cmd(*cmd_numbers):
     global cmd_tag_map
     if cmd_numbers:
         for num in cmd_numbers:
-            if cmd_numbers in cmd_tag_map:
-                textbox.tag_add('standard', cmd_tag_map[num] + '.first', cmd_tag_map[num] + '.last')
+            if num in cmd_tag_map:
+                index_first = textbox.tag_ranges(cmd_tag_map[num])[0]
+                index_last = textbox.tag_ranges(cmd_tag_map[num])[1]
+                for tag_name in textbox.tag_names(index_first):
+                    textbox.tag_remove(tag_name, index_first, index_last)
+                textbox.tag_add('standard', index_first, index_last)
                 textbox.tag_delete(cmd_tag_map[num])
                 cmd_tag_map.pop(num)
     else:
         for num in cmd_tag_map.keys():
-            textbox.tag_add('standard', cmd_tag_map[num] + '.first', cmd_tag_map[num] + '.last')
+            index_first = textbox.tag_ranges(cmd_tag_map[num])[0]
+            index_last = textbox.tag_ranges(cmd_tag_map[num])[1]
+            for tag_name in textbox.tag_names(index_first):
+                textbox.tag_remove(tag_name, index_first, index_last)
+            textbox.tag_add('standard', index_first, index_last)
             textbox.tag_delete(cmd_tag_map[num])
         cmd_tag_map.clear()

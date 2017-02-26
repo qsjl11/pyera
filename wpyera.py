@@ -6,7 +6,4 @@ core.cfg.platform = 'web'
 import core.game
 import script.mainflow
 
-
-#############################################################
-io.run(script.mainflow.open_func)
-
+core.game.run(script.mainflow.open_func)
