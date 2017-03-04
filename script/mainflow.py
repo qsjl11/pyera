@@ -1,31 +1,33 @@
 # -*- coding: UTF-8 -*-
-import core.io as io
-import core.flow as flow
-from core.data import gamedata
+import core.game as game
 
 
-@flow.create_flow(flow_name='open_flow')
 def open_func(*args):
-    io.printline()
-    io.style_def("my", foreground="purple", background='white',bold=True, underline= True, italic=True)
-    io.print('pyera 启动中，准备开始游戏',"my")
-    io.printl('pyera 启动中，准备开始游戏')
-    flow.print_cmd('[001] 开始游戏', 1, newgame_func,)
-    flow.print_cmd('[002] 开始游戏', 2, newgame_func, )
-    io.print('\n')
-    io.printl(gamedata()['test']['firstName'])
-    io.printl(str(gamedata()))
-
-    flow.order_deal()
-
+    game.pline()
+    game.pl('pyera 启动中，准备开始游戏')
+    game.pcmd('[001]   开始游戏', 1, newgame_func)
+    game.pl('')
+    game.pcmd('[002] 字符串测试', 2, len_test,arg=('[001]   开始游戏','pyera 启动中'))
+    game.p('\n')
+    game.askfor_order()
 
 
 def newgame_func():
-    flow.cmd_clear(1)
-    io.printline()
-    io.printl('请输入名字:')
-    name = flow.askfor_str()
-    io.printl('取名字为：' + str(name))
-    flow.askfor_str(donot_return_null_str=False)
-    io.clear_screen()
+    game.clr_cmd(1)
+    game.pline()
+    game.pl('请输入名字:')
+    name = game.askfor_str()
+    game.plwait('取名字为：' + str(name))
+    game.clr_screen()
 
+def len_test(*args):
+    game.pline()
+    game.pl('01234567890123456789012345678901234567890')
+    outstring = game.align('字符串', 20, 'left')
+    outstring = outstring + game.align('字数', 15, 'right')
+    game.pl(outstring)
+    for string in args:
+        outstring=game.align(string,20,'left')
+        outstring=outstring+game.align(str(game.display_len(string)),15,'right')
+        game.pl(outstring)
+    game.plwait('字数分析完成')

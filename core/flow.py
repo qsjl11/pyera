@@ -72,7 +72,7 @@ def order_deal(flag='order', print_order=True):
         io._get_input_event().wait()
         order = io.getorder()
         if print_order == True:
-            io.print(order)
+            io.print(order+'\n')
         if flag == 'order':
             if order.isdigit() and _cmd_valid(int(order)):
                 _cmd_deal(int(order))
@@ -96,3 +96,5 @@ def askfor_int(print_order=False):
         order = order_deal('str', print_order)
         if order.isdigit():
             return int(order)
+        else:
+            io.print("不是有效数字")

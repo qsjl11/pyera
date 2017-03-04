@@ -59,7 +59,7 @@ def send_input(*args):
     clearorder()
 
 
-textbox.bind("<Key>", lambda e: "break")
+# textbox.bind("<Key>", lambda e: "break")
 root.bind('<Return>', send_input)
 
 

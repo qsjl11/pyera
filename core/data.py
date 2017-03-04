@@ -35,7 +35,6 @@ def init():
     _loaddir(datapath)
 
 
-
 def _get_savefilename_path(filename):
     gamepath = os.path.split(os.path.realpath(__file__))[0][:-5]
     savepath = gamepath + '\\save'
@@ -45,17 +44,22 @@ def _get_savefilename_path(filename):
     return filepath
 
 
-def save(filename):
-    filepath=_get_savefilename_path(filename)
-    with open(filepath, 'w', encoding='utf-8') as f:
-        json.dump(_gamedata, f, ensure_ascii=False)
-
-
-def load(filename):
+def save(filename, data=None):
+    if data == None:
+        data = _gamedata
     filepath = _get_savefilename_path(filename)
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False)
+
+
+def load(filename, selfdata=False):
+    filepath = _get_savefilename_path(filename)
+    data = {}
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
-                _gamedata.update(json.load(f))
+            data = json.load(f)
     except FileNotFoundError:
-        print(filepath+'  没有该存档文件')
-
+        print(filepath + '  没有该存档文件')
+    if selfdata == False:
+        _gamedata.update(data)
+    return data

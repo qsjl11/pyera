@@ -34,19 +34,7 @@ def _get_input_event():
     return input_evnet
 
 
-# 输出一行，next：在新的一行输出文字
-def printl(string, style='standard'):
-    print(str(string), style)
-    print('\n')
 
-
-def printline():
-    printl('\n--------------------------------------------------------------------------------------------------------')
-
-
-def warn(string):
-    sys_print('')
-    sys_print(string)
 
 
 # style设置
