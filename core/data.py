@@ -26,7 +26,8 @@ def _loaddir(datapath):
             prefix = dirpath.replace(datapath, '').replace('\\', '.') + '.'
             if prefix == '.':
                 prefix = ''
-            _gamedata[prefix + name.split('.')[0]] = _loadjson(thefilepath)
+            if name.split('.')[1]=='json':
+                _gamedata[prefix + name.split('.')[0]] = _loadjson(thefilepath)
 
 
 def init():
@@ -37,6 +38,7 @@ def init():
 
 def _get_savefilename_path(filename):
     gamepath = os.path.split(os.path.realpath(__file__))[0][:-5]
+    print(os.path.split(os.path.realpath(__file__))[0])
     savepath = gamepath + '\\save'
     if not os.path.exists(savepath):
         os.makedirs(savepath)

@@ -5,7 +5,8 @@ import core.cfg
 sys_print = print
 
 if core.cfg.platform == 'web':
-    from core.webframe import *
+    pass
+    # from core.webframe import *
 
 if core.cfg.platform == 'win':
     from core.winframe import *

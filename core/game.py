@@ -13,6 +13,7 @@ def init(main_flow):
     # 载入数据库数据
     core.data.init()
     # 设置背景颜色
+    core.data._get_savefilename_path('')
     io.set_background(core.data.gamedata()['core_cfg']['background_color'])
     foreground_c = core.data.gamedata()['core_cfg']['font_color']
     background_c = core.data.gamedata()['core_cfg']['background_color']
