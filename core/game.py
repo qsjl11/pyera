@@ -65,7 +65,7 @@ p = io.print
 
 
 # 输出一行
-def pl(string, style='standard'):
+def pl(string='', style='standard'):
     """输出一行"""
     p(str(string), style)
     p('\n')
@@ -146,6 +146,9 @@ bind_cmd = core.flow.bind_cmd
 
 # 返回主数据集合
 data = core.data.gamedata
+
+# 获得存档目录
+savedir= core.data._get_savefilename_path('')[:-6]
 
 # 保存数据集合到文件, 也可将可以json序列化的data保存到某个文件中
 save = core.data.save

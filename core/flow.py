@@ -72,7 +72,7 @@ def order_deal(flag='order', print_order=True):
         io._get_input_event().wait()
         order = io.getorder()
         if print_order == True:
-            io.print(order+'\n')
+            io.print('\n' + order + '\n')
         if flag == 'order':
             if order.isdigit() and _cmd_valid(int(order)):
                 _cmd_deal(int(order))
@@ -80,6 +80,9 @@ def order_deal(flag='order', print_order=True):
 
         if flag == 'str':
             return io.getorder()
+
+        if flag == 'console':
+            eval(io.getorder())
 
 
 def askfor_str(donot_return_null_str=True, print_order=False):
