@@ -30,6 +30,7 @@ def main_func():
     game.clr_cmd()
     game.pline()
     game.pl('玩家姓名：'+game.data['player_name'])
+    game.pl(str(game.data))
     game.pline()
     game.pcmd('[001]  保存游戏', 1, saveload.save_func)
     game.pl()
