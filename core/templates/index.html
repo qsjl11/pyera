@@ -53,6 +53,7 @@
         var appendstr = "<span class='cmd' id=" + item.num + ">"
             + item.text + "</span>";
         var idstr = "#" + item.num;
+        if($(idstr).length){clearcmd_func(item.num)}
         $("#textbox").append(appendstr);
         $(idstr).addClass(item.normal_style);
         $(idstr).bind("click", function () {
@@ -85,8 +86,10 @@
             $(".cmd").attr("class", "standard");
         } else {
             idstr = "#" + numbers;
-            $(".cmd" + idstr).unbind('click mouseenter mouseleave');
-            $(".cmd" + idstr).attr("class", "standard");
+            ob=$(".cmd" + idstr);
+            ob.unbind('click mouseenter mouseleave');
+            ob.attr("class", "standard");
+            ob.removeAttr("id")
         }
     };
 
