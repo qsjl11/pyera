@@ -59,7 +59,19 @@ def send_input(*args):
     clearorder()
 
 
+def click(*args):
+    order.set('')
+    send_input()
+
+
+def click_skip(*args):
+    order.set('skip_all_wait')
+    send_input()
+
+
 # textbox.bind("<Key>", lambda e: "break")
+textbox.bind("<1>", click)
+textbox.bind("<3>", click_skip)
 root.bind('<Return>', send_input)
 
 
@@ -76,7 +88,7 @@ def seeend():
 
 
 def set_background(color):
-    textbox.configure(background=color)
+    textbox.configure(background=color, selectbackground="red")
 
 
 # ######################################################################
@@ -110,7 +122,7 @@ def frame_style_def(style_name, foreground, background, font, fontsize, bold, un
     font_str = font + ' ' + fontsize + ['', ' bold'][bold == True] + ['', ' underline'][underline == True] + \
                ['', ' italic'][italic == True]
     textbox.tag_configure(style_name, foreground=foreground, background=background, font=font_str)
-
+    # textbox.tag_configure(style_name, foreground=foreground, font=font_str)
 
 # #########################################################3
 # 输入处理函数

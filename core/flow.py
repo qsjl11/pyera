@@ -65,13 +65,18 @@ def _cmd_valid(order_number):
     return order_number in cmd_map.keys()
 
 
+__skip_flag__ = False
+
+
 # 处理输入
 def order_deal(flag='order', print_order=True):
+    global __skip_flag__
+    __skip_flag__ = False
     while True:
         io._get_input_event().clear()
         io._get_input_event().wait()
         order = io.getorder()
-        if print_order == True:
+        if print_order == True and order != '' and order != 'skip_all_wait':
             io.print('\n' + order + '\n')
         if flag == 'order':
             if order.isdigit() and _cmd_valid(int(order)):
@@ -82,7 +87,7 @@ def order_deal(flag='order', print_order=True):
             return io.getorder()
 
         if flag == 'console':
-            eval(io.getorder())
+            exec(io.getorder())
 
 
 def askfor_str(donot_return_null_str=True, print_order=False):
@@ -101,3 +106,11 @@ def askfor_int(print_order=False):
             return int(order)
         else:
             io.print("不是有效数字")
+
+
+def askfor_wait():
+    global __skip_flag__
+    if __skip_flag__ == False:
+        re = askfor_str(donot_return_null_str=False)
+        if re == 'skip_all_wait':
+            __skip_flag__ = True

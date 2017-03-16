@@ -22,14 +22,14 @@ def newgame_func():
     game.pline()
     game.pl('请输入名字:')
     name = game.askfor_str()
-    game.data()['player_name']=name
+    game.data['player_name']=name
     game.plwait('取名字为：' + str(name))
     main_func()
 
 def main_func():
     game.clr_cmd()
     game.pline()
-    game.pl('玩家姓名：'+game.data()['player_name'])
+    game.pl('玩家姓名：'+game.data['player_name'])
     game.pline()
     game.pcmd('[001]  保存游戏', 1, saveload.save_func)
     game.pl()

@@ -5,7 +5,8 @@ import core.cfg
 sys_print = print
 
 if core.cfg.platform == 'web':
-    from core.webframe import *
+    str = 'from core.webframe import *'
+    exec(str)
 
 if core.cfg.platform == 'win':
     from core.winframe import *
@@ -34,9 +35,6 @@ def _get_input_event():
     return input_evnet
 
 
-
-
-
 # style设置
 _foreground = '#C8C8C8'
 _background = '#2C4A69'
@@ -52,9 +50,11 @@ def style_def(style_name, foreground=_foreground, background=_background, font=_
 
 def init_style(foreground_c, background_c, onbutton_c, font, font_size):
     global style_def
+
     def new_style_def(style_name, foreground=foreground_c, background=background_c, font=font, fontsize=font_size,
                       bold=False, underline=False, italic=False):
         frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic)
-    style_def=new_style_def
+
+    style_def = new_style_def
     style_def('standard')
     style_def('onbutton', foreground=onbutton_c)

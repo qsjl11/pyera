@@ -57,7 +57,8 @@
         $("#textbox").append(appendstr);
         $(idstr).addClass(item.normal_style);
         $(idstr).bind("click", function () {
-            cmdsendorder(item.num)
+            cmdsendorder(item.num);
+            event.stopPropagation();
         });
         $(idstr).hover(function () {
             $(idstr).removeClass(item.normal_style);
@@ -156,6 +157,16 @@
         $('a#process_input').unbind('click');
         $('a#process_input').bind('click', function () {
             socket.emit('dealorder', $('input[name="proglang"]').val());
+        });
+
+        $('body').bind('click',function(e){
+            console.log(e.which);
+            socket.emit('dealorder', '')
+        });
+
+        $('body').bind('dblclick',function(){
+            console.log('click dbl');
+            socket.emit('dealorder', 'skip_all_wait')
         });
 
         sendorder = throttle(function () {

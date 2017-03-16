@@ -57,7 +57,7 @@ clr_order = io.clearorder
 
 # 暂停一下
 def wait():
-    askfor_str(donot_return_null_str=False)
+    core.flow.askfor_wait()
 
 
 # 输出相关函数#############################################################
@@ -87,7 +87,7 @@ def pwait(string, style='standard'):
     wait()
 
 
-def plwait(string, style='standard'):
+def plwait(string='', style='standard'):
     """输出一行并等待"""
     pl(string, style)
     wait()
@@ -145,7 +145,7 @@ bind_cmd = core.flow.bind_cmd
 # 数据处理相关函数 ###############################################################
 
 # 返回主数据集合
-data = core.data.gamedata
+data = core.data.gamedata()
 
 # 获得存档目录
 savedir= core.data._get_savefilename_path('')[:-6]
