@@ -26,7 +26,7 @@ def _loaddir(datapath):
             prefix = dirpath.replace(datapath, '').replace('\\', '.') + '.'
             if prefix == '.':
                 prefix = ''
-            if name.split('.')[1]=='json':
+            if name.split('.')[1] == 'json':
                 _gamedata[prefix + name.split('.')[0]] = _loadjson(thefilepath)
 
 

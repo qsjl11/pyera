@@ -46,14 +46,16 @@
     }
 
     showtext = function (item) {
-        $("#textbox").append('<span class='+item.style+'>' + item.text + '</span>');
+        $("#textbox").append('<span class=' + item.style + '>' + item.text + '</span>');
     };
 
     showcmd = function (item) {
         var appendstr = "<span class='cmd' id=" + item.num + ">"
             + item.text + "</span>";
         var idstr = "#" + item.num;
-        if($(idstr).length){clearcmd_func(item.num)}
+        if ($(idstr).length) {
+            clearcmd_func(item.num)
+        }
         $("#textbox").append(appendstr);
         $(idstr).addClass(item.normal_style);
         $(idstr).bind("click", function () {
@@ -87,7 +89,7 @@
             $(".cmd").attr("class", "standard");
         } else {
             idstr = "#" + numbers;
-            ob=$(".cmd" + idstr);
+            ob = $(".cmd" + idstr);
             ob.unbind('click mouseenter mouseleave');
             ob.attr("class", "standard");
             ob.removeAttr("id")
@@ -159,12 +161,12 @@
             socket.emit('dealorder', $('input[name="proglang"]').val());
         });
 
-        $('body').bind('click',function(e){
+        $('body').bind('click', function (e) {
             console.log(e.which);
             socket.emit('dealorder', '')
         });
 
-        $('body').bind('dblclick',function(){
+        $('body').bind('dblclick', function () {
             console.log('click dbl');
             socket.emit('dealorder', 'skip_all_wait')
         });

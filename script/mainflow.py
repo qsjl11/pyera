@@ -4,9 +4,11 @@ import script.saveload as saveload
 import script.lib as lib
 import random
 
+
 def test():
     import script.summon
     script.summon.summon_student()
+
 
 def open_func(*args):
     game.pline()

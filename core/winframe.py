@@ -107,7 +107,7 @@ def bind_return(func):
 sysprint = print
 
 
-def print(string, style=('standard')):
+def print(string, style=('standard',)):
     textbox.insert('end', string, style)
     seeend()
 
@@ -123,6 +123,7 @@ def frame_style_def(style_name, foreground, background, font, fontsize, bold, un
                ['', ' italic'][italic == True]
     textbox.tag_configure(style_name, foreground=foreground, background=background, font=font_str)
     # textbox.tag_configure(style_name, foreground=foreground, font=font_str)
+
 
 # #########################################################3
 # 输入处理函数

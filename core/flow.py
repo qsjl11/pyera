@@ -1,7 +1,5 @@
 # -*- coding: UTF-8 -*-
 import core.io as io
-import threading
-import time
 
 # 管理flow
 flow_map = {}
@@ -23,7 +21,7 @@ def get_flow(flow_name):
     if flow_name in flow_map.keys():
         return flow_map[flow_name]
     else:
-        io.warn(flow_name + ' :没有该流程，或该流程没有被加载')
+        print(flow_name + ' :没有该流程，或该流程没有被加载')
 
 
 # 管理命令
@@ -105,7 +103,7 @@ def askfor_int(print_order=False):
         if order.isdigit():
             return int(order)
         else:
-            io.print("不是有效数字"+'\n')
+            io.print("不是有效数字" + '\n')
 
 
 def askfor_wait():

@@ -5,8 +5,8 @@ import script.mainflow
 
 
 def load_func(return_func=None):
-    if return_func==None:
-        return_func=script.mainflow.main_func
+    if return_func == None:
+        return_func = script.mainflow.main_func
     game.pl('读取游戏：' + game.savedir)
     game.pline()
 
@@ -15,7 +15,7 @@ def load_func(return_func=None):
         game.load(load_file_name)
 
     def loadnodata(load_file_name):
-        game.pl(load_file_name+": 没有数据")
+        game.pl(load_file_name + ": 没有数据")
         game.askfor_order(print_order=False)
 
     for i in range(0, 11):
@@ -37,8 +37,8 @@ def load_func(return_func=None):
 
 
 def save_func(return_func=None):
-    if return_func==None:
-        return_func=script.mainflow.main_func
+    if return_func == None:
+        return_func = script.mainflow.main_func
     game.pline()
     game.pl('游戏存储目录：' + game.savedir)
     game.pl()
