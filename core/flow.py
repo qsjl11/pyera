@@ -105,7 +105,7 @@ def askfor_int(print_order=False):
         if order.isdigit():
             return int(order)
         else:
-            io.print("不是有效数字")
+            io.print("不是有效数字"+'\n')
 
 
 def askfor_wait():

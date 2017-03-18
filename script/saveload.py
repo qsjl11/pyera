@@ -29,7 +29,7 @@ def load_func(return_func=None):
         else:
             file_str = '[{:0>2}]'.format(i) + "  ----"
             game.pcmd(file_str, i, loadnodata, arg=(load_file_name,))
-        game.plwait()
+        game.pl()
     game.pl()
     game.pcmd('[99] 返回', 99, return_func)
     game.askfor_order()
