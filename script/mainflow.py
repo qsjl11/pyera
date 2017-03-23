@@ -6,17 +6,21 @@ import random
 
 
 def test():
-    import script.summon
-    script.summon.summon_student()
+    import script.student
+    script.student.summon_student()
+    # script.student.display_sutdent(student)
 
 
 def open_func(*args):
     game.pline()
     game.pl('pyera 启动中，准备游戏')
-    game.pl('随机数测试：' + str(random.randint(1, 10)))
+    game.def_style('notice', foreground='#DCE441')
+    game.def_style('title', foreground='#E1FFFF')
+    if not '人物列表' in game.data:
+        game.data['人物列表'] = []
     game.pl('pyera 启动中，准备完成')
-    test()
-    # open_menu()
+    # test()
+    open_menu()
 
 
 def open_menu():
@@ -28,6 +32,7 @@ def open_menu():
 
 
 def newgame_func():
+    game.pl()
     game.pline()
     game.pl('请输入学院名称:')
     name = game.askfor_str()
@@ -43,12 +48,16 @@ def newgame_func():
 
 def main_func():
     game.clr_cmd()
+    game.pl()
     game.pline()
     game.pl('玩家姓名：' + game.data['学校名称'])
-    # game.pl(str(game.data))
-    game.pline()
-    import script.summon
-    game.pcmd('[001]  召唤学生', 1, script.summon.summon_student)
+    game.p('学生名称：')
+    for stu in game.data['人物列表']:
+        game.p(stu['属性']['姓名']+' ')
+    game.pl()
+    game.pline('--')
+    import script.student
+    game.pcmd('[001]  学生管理', 1, script.student.student_manager)
     game.pl()
     game.pcmd('[100]  保存游戏', 100, saveload.save_func)
     game.p('    ')

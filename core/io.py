@@ -44,8 +44,7 @@ _fontsize = '14'
 
 def style_def(style_name, foreground=_foreground, background=_background, font=_font, fontsize=_fontsize, bold=False,
               underline=False, italic=False):
-    # include foreground, background, font, size, bold, underline, slant
-    frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic)
+    pass
 
 
 def init_style(foreground_c, background_c, onbutton_c, font, font_size):

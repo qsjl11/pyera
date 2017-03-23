@@ -12,3 +12,10 @@ def yes_or_no():
             return True
         if ans == 1:
             return False
+
+
+def get_id():
+    if not 'next_id' in game.data:
+        game.data['next_id'] = 0
+    game.data['next_id'] += 1
+    return game.data['next_id'] - 1

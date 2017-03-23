@@ -7,6 +7,7 @@ import core.data
 # 系统函数#############################################################
 # 初始化函数
 def init(main_flow):
+    global def_style
     io.clear_screen()
     io.clearorder()
     core.flow.cmd_clear()
@@ -22,6 +23,7 @@ def init(main_flow):
     fontsize = core.data.gamedata()['core_cfg']['font_size']
     io.init_style(foreground_c, background_c, onbutton_color, font, fontsize)
     io.style_def('warning', foreground='red', underline=True)
+    def_style = io.style_def
     main_flow()
 
 
@@ -71,9 +73,10 @@ def pl(string='', style='standard'):
     p('\n')
 
 
-def pline():
+def pline(sample='▃'):
     """输出一条横线"""
-    pl('\n------------------------------------------------------------------')
+    pl(sample*45)
+
 
 
 def pwarn(string, style='warning'):
