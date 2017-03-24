@@ -7,6 +7,8 @@ import random
 
 
 def student_manager():
+    game.clr_cmd()
+    game.pline()
     dispaly_student_list()
     game.pcmd('[101]  召唤学生', 101, summon_student)
     game.pl()
@@ -22,7 +24,7 @@ def dispaly_student_list():
 
     string = '----------------------------------' + '人物列表' + '---------------------------------------------'
     game.pl(string, style='title')
-    string = game.align('姓名', 15) + game.align('体力上限', 8) + '/  ' + \
+    string = game.align('ID', 4) + game.align('姓名', 15) + game.align('体力上限', 8) + '/  ' + \
              game.align('物资补给', 8) + '/  ' + game.align('神秘能源', 8)
     game.pl(string)
 
@@ -72,6 +74,10 @@ def _summon_student(student_type='普通人'):
         tpl['装备'][k] = random.choice(v)
     for k, v in tpl['背景'].items():
         tpl['背景'][k] = random.sample(v, 1)
+
+    # 随机取名字
+    if tpl['属性']['姓名'] == "未命名":
+        tpl['属性']['姓名'] = get_name(random.choice(tpl['素质']['性征']))
     tpl['ID'] = lib.get_id()
     return tpl
 
@@ -116,7 +122,7 @@ def display_sutdent(student):
     print_numattr(student['刻印'], attrs, 15, ' LV')
 
     print_title('素质')
-    attrs = ['性别', '性格', '倾向', '技能', '体质', '天赋']
+    attrs = ['性征', '性格', '倾向', '技能', '体质', '天赋']
     print_talent(student['素质'], attrs)
 
     print_title('背景')
@@ -128,3 +134,14 @@ def display_sutdent(student):
     print_numattr(student['装备'], attrs, 30)
     attrs = ['装备三', '装备四']
     print_numattr(student['装备'], attrs, 30)
+
+
+def get_name(xingbie='男'):
+    xing = random.choice(game.data['姓名']['姓'])
+    if xingbie in ('男','可爱的男孩子') :
+        ming = random.choice(game.data['姓名']['男名'])
+    elif xingbie == '女':
+        ming = random.choice(game.data['姓名']['女名'])
+    else:
+        ming = ''
+    return xing + ming

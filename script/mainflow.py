@@ -18,6 +18,8 @@ def open_func(*args):
     game.def_style('title', foreground='#E1FFFF')
     if not '人物列表' in game.data:
         game.data['人物列表'] = []
+    if not '世界列表' in game.data:
+        game.data['世界列表'] = []
     game.pl('pyera 启动中，准备完成')
     # test()
     open_menu()
@@ -53,11 +55,15 @@ def main_func():
     game.pl('玩家姓名：' + game.data['学校名称'])
     game.p('学生名称：')
     for stu in game.data['人物列表']:
-        game.p(stu['属性']['姓名']+' ')
+        game.p(stu['属性']['姓名'] + ' ')
     game.pl()
     game.pline('--')
+
     import script.student
     game.pcmd('[001]  学生管理', 1, script.student.student_manager)
+    game.p('    ')
+    import script.world
+    game.pcmd('[002]  世界管理', 2, script.world.world_manager)
     game.pl()
     game.pcmd('[100]  保存游戏', 100, saveload.save_func)
     game.p('    ')

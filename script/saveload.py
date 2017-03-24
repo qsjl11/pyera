@@ -5,6 +5,7 @@ import script.mainflow
 
 
 def load_func(return_func=None):
+    game.clr_cmd()
     if return_func == None:
         return_func = script.mainflow.main_func
     game.pl('读取游戏：' + game.savedir)
@@ -37,6 +38,7 @@ def load_func(return_func=None):
 
 
 def save_func(return_func=None):
+    game.clr_cmd()
     if return_func == None:
         return_func = script.mainflow.main_func
     game.pline()

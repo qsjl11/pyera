@@ -63,20 +63,30 @@ def wait():
 
 
 # 输出相关函数#############################################################
-p = io.print
+last_char = '\n'
+
+
+def p(string, style=('standard',)):
+    global last_char
+    if len(string) > 0:
+        last_char = string[-1:]
+    io.print(string, style)
 
 
 # 输出一行
 def pl(string='', style='standard'):
     """输出一行"""
+    global last_char
+    if not last_char=='\n':
+        p('\n')
     p(str(string), style)
-    p('\n')
+    if not last_char=='\n':
+        p('\n')
 
 
 def pline(sample='▃'):
     """输出一条横线"""
-    pl(sample*45)
-
+    pl(sample * 45)
 
 
 def pwarn(string, style='warning'):
@@ -137,7 +147,12 @@ def align(text, width, just='left'):
 # 命令相关函数#################################################################
 
 # 输出命令
-pcmd = core.flow.print_cmd
+def pcmd(cmd_str, cmd_number, cmd_func, arg=(), normal_style='standard', on_style='onbutton'):
+    global last_char
+    if len(cmd_str) > 0:
+        last_char = cmd_str[-1:]
+    core.flow.print_cmd(cmd_str, cmd_number, cmd_func, arg, normal_style, on_style)
+
 
 # 清除命令，没有参数则清除所有命令
 clr_cmd = core.flow.cmd_clear
