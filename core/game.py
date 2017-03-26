@@ -6,6 +6,8 @@ import core.data
 
 # 系统函数#############################################################
 # 初始化函数
+_main_flow=None
+
 def init(main_flow):
     global def_style
     io.clear_screen()
@@ -24,6 +26,9 @@ def init(main_flow):
     io.init_style(foreground_c, background_c, onbutton_color, font, fontsize)
     io.style_def('warning', foreground='red', underline=True)
     def_style = io.style_def
+    core.flow.reset_func=reset
+    global _main_flow
+    _main_flow=main_flow
     main_flow()
 
 
@@ -41,6 +46,12 @@ def console_log(string):
     print('game log:')
     print(string + '\n')
 
+def reset():
+    global _main_flow
+    clr_cmd()
+    clr_screen()
+    clr_order()
+    init(_main_flow)
 
 # 输入处理函数 #################################################################
 

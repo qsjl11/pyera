@@ -5,6 +5,7 @@ import script.lib as lib
 import random
 
 
+
 def test():
     import script.people
     script.people.summon_people()

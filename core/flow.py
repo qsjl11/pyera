@@ -64,6 +64,7 @@ def _cmd_valid(order_number):
 
 
 __skip_flag__ = False
+reset_func=None
 
 
 # 处理输入
@@ -74,6 +75,8 @@ def order_deal(flag='order', print_order=True):
         io._get_input_event().clear()
         io._get_input_event().wait()
         order = io.getorder()
+        if order=='_reset_this_game_':
+            reset_func()
         if print_order == True and order != '' and order != 'skip_all_wait':
             io.print('\n' + order + '\n')
         if flag == 'order':

@@ -42,7 +42,13 @@ menuother = Menu(menubar)
 menubar.add_cascade(menu=menufile, label=' 文件')
 menubar.add_cascade(menu=menuother, label=' 其他')
 
-menufile.add_command(label='重新开始')
+
+def reset(*args):
+    order.set('_reset_this_game_')
+    send_input()
+
+
+menufile.add_command(label='重新开始', command=reset)
 menufile.add_command(label='退出', command=lambda: sys.exit())
 
 menuother.add_command(label='设置')
@@ -74,12 +80,15 @@ textbox.bind("<1>", click)
 textbox.bind("<3>", click_skip)
 root.bind('<Return>', send_input)
 
-
 # #######################################################################
 # 运行函数
+_flowthread = None
+
+
 def run(open_func):
-    flowthread = threading.Thread(target=open_func, name='flowthread')
-    flowthread.start()
+    global _flowthread
+    _flowthread = threading.Thread(target=open_func, name='flowthread')
+    _flowthread.start()
     root.mainloop()
 
 
@@ -170,7 +179,6 @@ def io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutto
     textbox.tag_bind(cmd_tagname, '<Enter>', enter_func)
     textbox.tag_bind(cmd_tagname, '<Leave>', leave_func)
     print(cmd_str, style=(cmd_tagname, normal_style))
-
 
 
 # 清除命令函数
