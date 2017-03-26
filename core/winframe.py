@@ -172,6 +172,7 @@ def io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutto
     print(cmd_str, style=(cmd_tagname, normal_style))
 
 
+
 # 清除命令函数
 def io_clear_cmd(*cmd_numbers):
     global cmd_tag_map

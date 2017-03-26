@@ -15,7 +15,17 @@ def yes_or_no():
 
 
 def get_id():
-    if not 'next_id' in game.data:
-        game.data['next_id'] = 0
-    game.data['next_id'] += 1
-    return game.data['next_id'] - 1
+    if not 'last_id' in game.data:
+        game.data['last_id'] = 100
+    game.data['last_id'] += 1
+    return game.data['last_id']
+
+
+def value_bar(vnow, vmax, length=30):
+    if length < 3:
+        length = 30
+    show_sample = int(vnow / vmax * length)
+    if show_sample > length:
+        show_sample = length
+    string = '[{0}{1}] ({2}/{3})'.format('*' * show_sample, '-' * (length - show_sample), vnow, vmax)
+    return string

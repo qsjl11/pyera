@@ -6,21 +6,23 @@ import copy
 import random
 
 
-def student_manager():
+def people_manager():
     game.clr_cmd()
     game.pline()
-    dispaly_student_list()
-    game.pcmd('[101]  召唤学生', 101, summon_student)
+    dispaly_people_list()
+    game.pcmd('[001]  召唤学生', 1, summon_people)
     game.pl()
-    game.pcmd('[999]  退出管理', 999, script.mainflow.main_func)
+    game.pcmd('[099]  退出管理', 99, script.mainflow.main_func)
     game.askfor_order()
 
 
-def dispaly_student_list():
-    def display_student_here(student):
-        display_sutdent(student)
+def dispaly_people_list(func=None):
+    def display_people_here(people):
+        display_people(people)
         game.plwait()
-        student_manager()
+        people_manager()
+    if func==None:
+        func=display_people_here
 
     string = '----------------------------------' + '人物列表' + '---------------------------------------------'
     game.pl(string, style='title')
@@ -33,28 +35,28 @@ def dispaly_student_list():
                  game.align(stu['属性']['体力上限'], 8, just='right') + '/  ' + \
                  game.align(stu['属性']['物资补给'], 8, just='right') + '/  ' + \
                  game.align(stu['属性']['神秘能源'], 8, just='right') + '\n'
-        game.pcmd(string, stu['ID'], display_student_here, arg=(stu,))
+        game.pcmd(string, stu['ID'], func, arg=(stu,))
 
     string = '---------------------------------------------------------------------------------------'
     game.pl(string, style='title')
 
 
-def summon_student(student_type='普通人'):
+def summon_people(people_type='普通人'):
     if not '人物列表' in game.data:
         game.data['人物列表'] = []
 
-    temp_student = _summon_student(student_type)
-    display_sutdent(temp_student)
+    temp_student = _summon_people(people_type)
+    display_people(temp_student)
     game.pl('是否接受这个学生？', style='notice')
     ans = lib.yes_or_no()
     game.pl()
     if ans == True:
         game.data['人物列表'].append(temp_student)
-    student_manager()
+    people_manager()
 
 
-def _summon_student(student_type='普通人'):
-    tpl = copy.deepcopy(game.data['人物'][student_type])
+def _summon_people(people_type='普通人'):
+    tpl = copy.deepcopy(game.data['人物'][people_type])
     for attr in ['属性', '经验', '能力', '刻印']:
         for k, v in tpl[attr].items():
             if type(v) == list:
@@ -82,7 +84,7 @@ def _summon_student(student_type='普通人'):
     return tpl
 
 
-def display_sutdent(student):
+def display_people(people):
     def print_title(title):
         string = '□' + title + '□' + '-------------------------------------------------------------------------------'
         game.pl(string, style='title')
@@ -101,39 +103,39 @@ def display_sutdent(student):
             game.pl(temp)
 
     game.pline()
-    game.pl('姓名：' + student['属性']['姓名'])
+    game.pl('姓名：' + people['属性']['姓名'])
 
     print_title('属性')
     attrs = ["体力上限", "物资补给", "神秘能源", "认同程度", "因果点数", "因果碎片"]
-    print_numattr(student['属性'], attrs, 15)
+    print_numattr(people['属性'], attrs, 15)
 
     print_title('经验')
     attrs = ["近战经验", "远战经验", "科技经验", "神秘经验"]
-    print_numattr(student['经验'], attrs, 15)
+    print_numattr(people['经验'], attrs, 15)
 
     print_title('能力')
     attrs = ['见闻', '社交', '科技', '神秘']
-    print_numattr(student['能力'], attrs, 15)
+    print_numattr(people['能力'], attrs, 15)
     attrs = ['近战', '远战', '基因锁', '身体强化']
-    print_numattr(student['能力'], attrs, 15)
+    print_numattr(people['能力'], attrs, 15)
 
     print_title('刻印')
-    attrs = student['刻印'].keys()
-    print_numattr(student['刻印'], attrs, 15, ' LV')
+    attrs = people['刻印'].keys()
+    print_numattr(people['刻印'], attrs, 15, ' LV')
 
     print_title('素质')
     attrs = ['性征', '性格', '倾向', '技能', '体质', '天赋']
-    print_talent(student['素质'], attrs)
+    print_talent(people['素质'], attrs)
 
     print_title('背景')
     attrs = ['职业']
-    print_talent(student['背景'], attrs)
+    print_talent(people['背景'], attrs)
 
     print_title('装备')
     attrs = ['装备一', '装备二']
-    print_numattr(student['装备'], attrs, 30)
+    print_numattr(people['装备'], attrs, 30)
     attrs = ['装备三', '装备四']
-    print_numattr(student['装备'], attrs, 30)
+    print_numattr(people['装备'], attrs, 30)
 
 
 def get_name(xingbie='男'):
