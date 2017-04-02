@@ -60,18 +60,18 @@ def main_func():
     game.pline('--')
 
     import script.play
-    game.pcmd('[001]  开始试炼', 1, script.play.main)
+    game.pcmd('[101]  开始试炼', 101, script.play.init_play)
     game.p('    ')
     import script.play_cfg
-    game.pcmd('[002]  试炼设置', 2, script.play_cfg.play_config)
+    game.pcmd('[102]  试炼设置', 102, script.play_cfg.play_config)
     game.pl()
     import script.people
-    game.pcmd('[003]  人物管理', 3, script.people.people_manager)
+    game.pcmd('[103]  人物管理', 103, script.people.people_manager)
     game.p('    ')
     import script.world
-    game.pcmd('[004]  世界管理', 4, script.world.world_manager)
+    game.pcmd('[104]  世界管理', 104, script.world.world_manager)
     game.pl()
-    game.pcmd('[011]  保存游戏', 11, saveload.save_func)
+    game.pcmd('[111]  保存游戏', 111, saveload.save_func)
     game.p('    ')
-    game.pcmd('[012]  读取游戏', 12, saveload.load_func)
+    game.pcmd('[112]  读取游戏', 112, saveload.load_func)
     game.askfor_order()

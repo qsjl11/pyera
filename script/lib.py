@@ -27,5 +27,7 @@ def value_bar(vnow, vmax, length=30):
     show_sample = int(vnow / vmax * length)
     if show_sample > length:
         show_sample = length
+    if show_sample < 0:
+        show_sample = 0
     string = '[{0}{1}] ({2}/{3})'.format('*' * show_sample, '-' * (length - show_sample), vnow, vmax)
     return string

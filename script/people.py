@@ -116,7 +116,7 @@ def display_people(people):
     print_title('能力')
     attrs = ['见闻', '社交', '科技', '神秘']
     print_numattr(people['能力'], attrs, 15)
-    attrs = ['近战', '远战', '基因锁', '身体强化']
+    attrs = ['近战', '远战', '基因锁']
     print_numattr(people['能力'], attrs, 15)
 
     print_title('刻印')

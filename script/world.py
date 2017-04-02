@@ -24,10 +24,10 @@ def display_world_list(func=None):
     for w in game.data['世界列表']:
         string = game.align(w['ID'], 4) + game.align(w['世界名称'], 15) \
                  + game.align(w['剧情容量'], 15) + game.align(w['构建点数'], 15)
-        if func==None:
+        if func == None:
             game.pl(string)
         else:
-            game.pcmd(string+'\n',w['ID'],func,arg=(w,))
+            game.pcmd(string + '\n', w['ID'], func, arg=(w,))
     string = '---------------------------------------------------------------------------------------'
     game.pl(string, style='title')
 
@@ -50,13 +50,12 @@ def create_world():
 
 def _create_world(type_id):
     tpl = copy.deepcopy(game.data['世界'][type_id])
-    game.pl("生成新世界：" + tpl['世界名称'] + "?")
-    game.call_event('生成世界_'+tpl['世界名称'])
-    #是否创建世界
+    tpl = game.call_event('生成世界_' + tpl['世界名称'], arg=(tpl,))
+    # 是否创建世界
+    game.pl("保留新世界：" + tpl['世界名称'] + "?")
     ans = lib.yes_or_no()
     game.pl()
     if ans == True:
         tpl['ID'] = lib.get_id()
         game.data['世界列表'].append(tpl)
     world_manager()
-

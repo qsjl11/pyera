@@ -101,9 +101,9 @@ def pl(string='', style='standard'):
         p('\n')
 
 
-def pline(sample='▃'):
+def pline(sample='▃',style='standard'):
     """输出一条横线"""
-    pl(sample * 45)
+    pl(sample * 45, style)
 
 
 def pwarn(string, style='warning'):
@@ -212,10 +212,21 @@ def call_event(event_name, arg=(), kw={}):
 
     if not isinstance(arg, tuple):
         arg = (arg,)
-
+    re = None
     for func in event_dic[event_name]:
-        func(*arg, **kw)
+        re = func(*arg, **kw)
+    return re
 
+def call_event_all_results(event_name, arg=(), kw={}):
+    if not event_name in event_dic.keys():
+        def_event(event_name)
+
+    if not isinstance(arg, tuple):
+        arg = (arg,)
+    re = []
+    for func in event_dic[event_name]:
+        re.append(func(*arg, **kw))
+    return re
 
 def del_event(event_name):
     if event_name in event_dic.keys():
@@ -229,14 +240,17 @@ def bind_event_deco(event_name):
 
     return decorate
 
+
 import importlib
+
+
 def load_event_file(script_path='\\script'):
     datapath = core.data.gamepath + script_path
     for dirpath, dirnames, filenames in os.walk(datapath):
         for name in filenames:
-            prefix = dirpath.replace(core.data.gamepath+'\\', '').replace('\\', '.') + '.'
+            prefix = dirpath.replace(core.data.gamepath + '\\', '').replace('\\', '.') + '.'
             modelname = name.split('.')[0]
             typename = name.split('.')[1]
-            if typename=='py' and re.match('^event_',modelname):
-                fullname=prefix+modelname
+            if typename == 'py' and re.match('^event_', modelname):
+                fullname = prefix + modelname
                 importlib.import_module(fullname)
