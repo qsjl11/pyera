@@ -28,19 +28,19 @@ def get_flow(flow_name):
 cmd_map = {}
 
 
-def bind_cmd(cmd_number, cmd_func, arg=()):
+def bind_cmd(cmd_number, cmd_func, arg=(), kw={}):
     if not isinstance(arg, tuple):
         arg = (arg,)
 
     def run_func():
-        cmd_func(*arg)
+        cmd_func(*arg, **kw)
 
     cmd_map[cmd_number] = run_func
 
 
-def print_cmd(cmd_str, cmd_number, cmd_func, arg=(), normal_style='standard', on_style='onbutton'):
+def print_cmd(cmd_str, cmd_number, cmd_func, arg=(), kw={}, normal_style='standard', on_style='onbutton'):
     '''arg is tuple contain args which cmd_func could be used'''
-    bind_cmd(cmd_number, cmd_func, arg)
+    bind_cmd(cmd_number, cmd_func, arg, kw)
     io.io_print_cmd(cmd_str, cmd_number, normal_style, on_style)
     return cmd_str
 
@@ -64,7 +64,7 @@ def _cmd_valid(order_number):
 
 
 __skip_flag__ = False
-reset_func=None
+reset_func = None
 
 
 # 处理输入
@@ -75,7 +75,7 @@ def order_deal(flag='order', print_order=True):
         io._get_input_event().clear()
         io._get_input_event().wait()
         order = io.getorder()
-        if order=='_reset_this_game_':
+        if order == '_reset_this_game_':
             reset_func()
         if print_order == True and order != '' and order != 'skip_all_wait':
             io.print('\n' + order + '\n')
@@ -106,7 +106,7 @@ def askfor_int(print_order=False):
         if order.isdigit():
             return int(order)
         else:
-            io.print('\n'+"不是有效数字" + '\n')
+            io.print('\n' + "不是有效数字" + '\n')
 
 
 def askfor_wait():

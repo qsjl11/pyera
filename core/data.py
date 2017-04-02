@@ -3,7 +3,7 @@ import json
 import os
 
 _gamedata = {}
-
+gamepath = os.path.split(os.path.realpath(__file__))[0][:-5]
 
 def gamedata():
     return _gamedata

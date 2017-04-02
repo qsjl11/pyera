@@ -2,11 +2,13 @@
 import core.io as io
 import core.flow
 import core.data
-
+import os
+import re
 
 # 系统函数#############################################################
 # 初始化函数
-_main_flow=None
+_main_flow = None
+
 
 def init(main_flow):
     global def_style
@@ -15,6 +17,8 @@ def init(main_flow):
     core.flow.cmd_clear()
     # 载入数据库数据
     core.data.init()
+    # 事件载入
+    load_event_file()
     # 设置背景颜色
     core.data._get_savefilename_path('')
     io.set_background(core.data.gamedata()['core_cfg']['background_color'])
@@ -26,9 +30,9 @@ def init(main_flow):
     io.init_style(foreground_c, background_c, onbutton_color, font, fontsize)
     io.style_def('warning', foreground='red', underline=True)
     def_style = io.style_def
-    core.flow.reset_func=reset
+    core.flow.reset_func = reset
     global _main_flow
-    _main_flow=main_flow
+    _main_flow = main_flow
     main_flow()
 
 
@@ -46,12 +50,14 @@ def console_log(string):
     print('game log:')
     print(string + '\n')
 
+
 def reset():
     global _main_flow
     clr_cmd()
     clr_screen()
     clr_order()
     init(_main_flow)
+
 
 # 输入处理函数 #################################################################
 
@@ -88,10 +94,10 @@ def p(string, style=('standard',)):
 def pl(string='', style='standard'):
     """输出一行"""
     global last_char
-    if not last_char=='\n':
+    if not last_char == '\n':
         p('\n')
     p(str(string), style)
-    if not last_char=='\n':
+    if not last_char == '\n':
         p('\n')
 
 
@@ -158,11 +164,11 @@ def align(text, width, just='left'):
 # 命令相关函数#################################################################
 
 # 输出命令
-def pcmd(cmd_str, cmd_number, cmd_func, arg=(), normal_style='standard', on_style='onbutton'):
+def pcmd(cmd_str, cmd_number, cmd_func, arg=(), kw={}, normal_style='standard', on_style='onbutton'):
     global last_char
     if len(cmd_str) > 0:
         last_char = cmd_str[-1:]
-    core.flow.print_cmd(cmd_str, cmd_number, cmd_func, arg, normal_style, on_style)
+    core.flow.print_cmd(cmd_str, cmd_number, cmd_func, arg, kw, normal_style, on_style)
 
 
 # 清除命令，没有参数则清除所有命令
@@ -184,3 +190,53 @@ save = core.data.save
 
 # 从文件中加载数据集合, selfdata为True时，只返回反序列化之后的数据，不会将数据加载到gamedata
 load = core.data.load
+
+# event函数#########################################################################
+event_dic = {}
+
+
+def def_event(event_name):
+    if not event_name in event_dic.keys():
+        event_dic[event_name] = []
+
+
+def bind_event(event_name, event_func):
+    if not event_name in event_dic.keys():
+        def_event(event_name)
+    event_dic[event_name].append(event_func)
+
+
+def call_event(event_name, arg=(), kw={}):
+    if not event_name in event_dic.keys():
+        def_event(event_name)
+
+    if not isinstance(arg, tuple):
+        arg = (arg,)
+
+    for func in event_dic[event_name]:
+        func(*arg, **kw)
+
+
+def del_event(event_name):
+    if event_name in event_dic.keys():
+        event_dic[event_name] = []
+
+
+def bind_event_deco(event_name):
+    def decorate(func):
+        bind_event(event_name, func)
+        return func
+
+    return decorate
+
+import importlib
+def load_event_file(script_path='\\script'):
+    datapath = core.data.gamepath + script_path
+    for dirpath, dirnames, filenames in os.walk(datapath):
+        for name in filenames:
+            prefix = dirpath.replace(core.data.gamepath+'\\', '').replace('\\', '.') + '.'
+            modelname = name.split('.')[0]
+            typename = name.split('.')[1]
+            if typename=='py' and re.match('^event_',modelname):
+                fullname=prefix+modelname
+                importlib.import_module(fullname)

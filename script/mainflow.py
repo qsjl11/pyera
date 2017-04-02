@@ -7,10 +7,9 @@ import random
 
 
 def test():
-    import script.people
-    script.people.summon_people()
-    # script.student.display_people(student)
-
+    import script
+    string=dir(script)
+    game.p(string)
 
 def open_func(*args):
     game.pline()
@@ -67,7 +66,7 @@ def main_func():
     game.pcmd('[002]  试炼设置', 2, script.play_cfg.play_config)
     game.pl()
     import script.people
-    game.pcmd('[003]  学生管理', 3, script.people.people_manager)
+    game.pcmd('[003]  人物管理', 3, script.people.people_manager)
     game.p('    ')
     import script.world
     game.pcmd('[004]  世界管理', 4, script.world.world_manager)

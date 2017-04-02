@@ -10,7 +10,7 @@ def people_manager():
     game.clr_cmd()
     game.pline()
     dispaly_people_list()
-    game.pcmd('[001]  召唤学生', 1, summon_people)
+    game.pcmd('[001]  召唤人物', 1, summon_people)
     game.pl()
     game.pcmd('[099]  退出管理', 99, script.mainflow.main_func)
     game.askfor_order()
@@ -47,7 +47,7 @@ def summon_people(people_type='普通人'):
 
     temp_student = _summon_people(people_type)
     display_people(temp_student)
-    game.pl('是否接受这个学生？', style='notice')
+    game.pl('是否接受这个人物？', style='notice')
     ans = lib.yes_or_no()
     game.pl()
     if ans == True:

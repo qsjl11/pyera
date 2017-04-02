@@ -51,7 +51,7 @@ def create_world():
 def _create_world(type_id):
     tpl = copy.deepcopy(game.data['世界'][type_id])
     game.pl("生成新世界：" + tpl['世界名称'] + "?")
-
+    game.call_event('生成世界_'+tpl['世界名称'])
     #是否创建世界
     ans = lib.yes_or_no()
     game.pl()
@@ -59,3 +59,4 @@ def _create_world(type_id):
         tpl['ID'] = lib.get_id()
         game.data['世界列表'].append(tpl)
     world_manager()
+
