@@ -128,10 +128,19 @@ def clear_screen():
 
 def frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic):
     # include foreground, background, font, size, bold, underline, slant
-    font_str = font + ' ' + fontsize + ['', ' bold'][bold == True] + ['', ' underline'][underline == True] + \
-               ['', ' italic'][italic == True]
-    textbox.tag_configure(style_name, foreground=foreground, background=background, font=font_str)
-    # textbox.tag_configure(style_name, foreground=foreground, font=font_str)
+
+    # font_str = font + ' ' + fontsize + ['', ' bold'][bold == True] + ['', ' underline'][underline == True] + \
+    #            ['', ' italic'][italic == True]
+    font_list=[]
+    font_list.append(font)
+    font_list.append(fontsize)
+    if bold==True:
+        font_list.append('bold')
+    if underline == True:
+        font_list.append('underline')
+    if italic == True:
+        font_list.append('italic')
+    textbox.tag_configure(style_name, foreground=foreground, background=background, font=tuple(font_list))
 
 
 # #########################################################3
