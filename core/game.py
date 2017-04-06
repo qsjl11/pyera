@@ -215,11 +215,11 @@ def sort_event(event_name):
         try:
             event_mark=event_mark_dic[event_name][event_func]
             if event_mark==None:
-                return 0
+                return 99999999
             number=core.data.gamedata()['core_event_sort'][event_name][event_mark]
             return number
         except KeyError:
-            return 0
+            return 99999999
 
     event_dic[event_name].sort(key=getkey)
 
