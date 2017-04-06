@@ -7,9 +7,8 @@ import random
 
 
 def test():
-    import script
-    string=dir(script)
-    game.p(string)
+    return
+    game.p(str(game.data['core_event_sort']['生成人物']['职业处理']))
 
 def open_func(*args):
     game.pline()
@@ -23,7 +22,7 @@ def open_func(*args):
     import script.play_cfg
     script.play_cfg.init()
     game.pl('pyera 启动中，准备完成')
-    # test()
+    test()
     open_menu()
 
 

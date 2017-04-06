@@ -21,8 +21,9 @@ def dispaly_people_list(func=None):
         display_people(people)
         game.plwait()
         people_manager()
-    if func==None:
-        func=display_people_here
+
+    if func == None:
+        func = display_people_here
 
     string = '----------------------------------' + '人物列表' + '---------------------------------------------'
     game.pl(string, style='title')
@@ -31,7 +32,7 @@ def dispaly_people_list(func=None):
     game.pl(string)
 
     for stu in game.data['人物列表']:
-        string = game.align('[' + str(stu['ID']) + ']', 4) + game.align(stu['属性']['姓名'], 15) + \
+        string = game.align('[' + str(stu['ID']) + ']', 4) + game.align(stu['姓名'], 15) + \
                  game.align(stu['属性']['体力上限'], 8, just='right') + '/  ' + \
                  game.align(stu['属性']['物资补给'], 8, just='right') + '/  ' + \
                  game.align(stu['属性']['神秘能源'], 8, just='right') + '\n'
@@ -78,9 +79,12 @@ def _summon_people(people_type='普通人'):
         tpl['背景'][k] = random.sample(v, 1)
 
     # 随机取名字
-    if tpl['属性']['姓名'] == "未命名":
-        tpl['属性']['姓名'] = get_name(random.choice(tpl['素质']['性征']))
+    if tpl['姓名'] == "未命名":
+        tpl['姓名'] = get_name(random.choice(tpl['素质']['性征']))
     tpl['ID'] = lib.get_id()
+
+    # 调用事件
+    tpl=game.call_event_as_tube('生成人物', tpl)
     return tpl
 
 
@@ -103,7 +107,7 @@ def display_people(people):
             game.pl(temp)
 
     game.pline()
-    game.pl('姓名：' + people['属性']['姓名'])
+    game.pl('姓名：' + people['姓名'])
 
     print_title('属性')
     attrs = ["体力上限", "物资补给", "神秘能源", "认同程度", "因果点数", "因果碎片"]
@@ -140,7 +144,7 @@ def display_people(people):
 
 def get_name(xingbie='男'):
     xing = random.choice(game.data['姓名']['姓'])
-    if xingbie in ('男','可爱的男孩子') :
+    if xingbie in ('男', '可爱的男孩子'):
         ming = random.choice(game.data['姓名']['男名'])
     elif xingbie == '女':
         ming = random.choice(game.data['姓名']['女名'])

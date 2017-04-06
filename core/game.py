@@ -101,7 +101,7 @@ def pl(string='', style='standard'):
         p('\n')
 
 
-def pline(sample='▃',style='standard'):
+def pline(sample='▃', style='standard'):
     """输出一条横线"""
     pl(sample * 45, style)
 
@@ -193,17 +193,35 @@ load = core.data.load
 
 # event函数#########################################################################
 event_dic = {}
+event_mark_dic = {}
 
 
 def def_event(event_name):
     if not event_name in event_dic.keys():
         event_dic[event_name] = []
+        event_mark_dic[event_name] = {}
 
 
-def bind_event(event_name, event_func):
+def bind_event(event_name, event_func, event_mark=None):
     if not event_name in event_dic.keys():
         def_event(event_name)
     event_dic[event_name].append(event_func)
+    event_mark_dic[event_name][event_func] = event_mark
+    sort_event(event_name)
+
+
+def sort_event(event_name):
+    def getkey(event_func):
+        try:
+            event_mark=event_mark_dic[event_name][event_func]
+            if event_mark==None:
+                return 0
+            number=core.data.gamedata()['core_event_sort'][event_name][event_mark]
+            return number
+        except KeyError:
+            return 0
+
+    event_dic[event_name].sort(key=getkey)
 
 
 def call_event(event_name, arg=(), kw={}):
@@ -217,6 +235,7 @@ def call_event(event_name, arg=(), kw={}):
         re = func(*arg, **kw)
     return re
 
+
 def call_event_all_results(event_name, arg=(), kw={}):
     if not event_name in event_dic.keys():
         def_event(event_name)
@@ -228,14 +247,21 @@ def call_event_all_results(event_name, arg=(), kw={}):
         re.append(func(*arg, **kw))
     return re
 
+
+def call_event_as_tube(event_name, target=None):
+    for func in event_dic[event_name]:
+        target = func(target)
+    return target
+
+
 def del_event(event_name):
     if event_name in event_dic.keys():
         event_dic[event_name] = []
 
 
-def bind_event_deco(event_name):
+def bind_event_deco(event_name, event_mark=None):
     def decorate(func):
-        bind_event(event_name, func)
+        bind_event(event_name, func, event_mark)
         return func
 
     return decorate

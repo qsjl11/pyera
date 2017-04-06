@@ -13,7 +13,7 @@ class Target_people():
 
     def __init__(self, people_data):
         self.data = people_data
-        self.姓名 = self.data['属性']['姓名']
+        self.姓名 = self.data['姓名']
         self.当前体力 = self.data['属性']['体力上限']
         self.体力上限 = self.data['属性']['体力上限']
 

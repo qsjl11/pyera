@@ -33,7 +33,7 @@ def display_traget():
     if target_people == None:
         string = string + game.align('未设定', 12)
     else:
-        string = string + game.align(target_people['属性']['姓名'], 20)
+        string = string + game.align(target_people['姓名'], 20)
     string = string + '试炼世界：'
     if target_world == None:
         string = string + game.align('未设定', 12)
@@ -45,7 +45,7 @@ def display_traget():
 def change_target_people():
     def change_people(people):
         game.data['试炼设置']['试炼人物'] = people
-        game.pl('试炼人物已改为：' + people['属性']['姓名'])
+        game.pl('试炼人物已改为：' + people['姓名'])
         play_config()
 
     game.clr_cmd()
