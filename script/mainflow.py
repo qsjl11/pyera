@@ -5,10 +5,10 @@ import script.lib as lib
 import random
 
 
-
 def test():
     return
     game.p(str(game.data['core_event_sort']['生成人物']['职业处理']))
+
 
 def open_func(*args):
     game.pline()
@@ -19,6 +19,8 @@ def open_func(*args):
         game.data['人物列表'] = []
     if not '世界列表' in game.data:
         game.data['世界列表'] = []
+    if not '队伍列表' in game.data:
+        game.data['队伍列表'] = []
     import script.play_cfg
     script.play_cfg.init()
     game.pl('pyera 启动中，准备完成')
@@ -67,8 +69,11 @@ def main_func():
     import script.people
     game.pcmd('[103]  人物管理', 103, script.people.people_manager)
     game.p('    ')
+    import script.group
+    game.pcmd('[104]  队伍管理', 104, script.group.group_manager)
+    game.p('    ')
     import script.world
-    game.pcmd('[104]  世界管理', 104, script.world.world_manager)
+    game.pcmd('[105]  世界管理', 105, script.world.world_manager)
     game.pl()
     game.pcmd('[111]  保存游戏', 111, saveload.save_func)
     game.p('    ')

@@ -5,6 +5,9 @@ import core.data
 import os
 import re
 
+# 字符串定义###########################################################
+NO_EVENT_FUNC='no_event_func'
+
 # 系统函数#############################################################
 # 初始化函数
 _main_flow = None
@@ -230,7 +233,7 @@ def call_event(event_name, arg=(), kw={}):
 
     if not isinstance(arg, tuple):
         arg = (arg,)
-    re = None
+    re = NO_EVENT_FUNC
     for func in event_dic[event_name]:
         re = func(*arg, **kw)
     return re
