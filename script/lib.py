@@ -31,3 +31,8 @@ def value_bar(vnow, vmax, length=30):
         show_sample = 0
     string = '[{0}{1}] ({2}/{3})'.format('*' * show_sample, '-' * (length - show_sample), vnow, vmax)
     return string
+
+def lock_outer_var(*args):
+    print(args)
+    def wrapper(func):
+        return func

@@ -6,6 +6,7 @@ import random
 
 
 def test():
+
     return
     game.p(str(game.data['core_event_sort']['生成人物']['职业处理']))
 
@@ -64,7 +65,8 @@ def main_func():
     game.pcmd('[101]  开始试炼', 101, script.play.init_play)
     game.p('    ')
     import script.play_cfg
-    game.pcmd('[102]  试炼设置', 102, script.play_cfg.play_config)
+    # game.pcmd('[102]  试炼设置', 102, script.play_cfg.play_config)
+    game.pcmd('[999]  试炼设置', 999, script.play_cfg.play_config)
     game.pl()
     import script.people
     game.pcmd('[103]  人物管理', 103, script.people.people_manager)
@@ -78,4 +80,4 @@ def main_func():
     game.pcmd('[111]  保存游戏', 111, saveload.save_func)
     game.p('    ')
     game.pcmd('[112]  读取游戏', 112, saveload.load_func)
-    game.askfor_order()
+    # game.askfor_order()

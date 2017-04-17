@@ -13,6 +13,9 @@ if core.cfg.platform == 'win':
 
 import threading
 
+import sys
+sys.setrecursionlimit(100000)
+
 input_evnet = threading.Event()
 
 order_swap = None

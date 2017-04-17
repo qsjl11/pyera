@@ -9,14 +9,14 @@ import random
 def people_manager():
     game.clr_cmd()
     game.pline()
-    dispaly_people_list()
+    dispaly_people_list(askfor_order_atend=False)
     game.pcmd('[001]  召唤人物', 1, summon_people)
     game.pl()
     game.pcmd('[099]  退出管理', 99, script.mainflow.main_func)
     game.askfor_order()
 
 
-def dispaly_people_list(func=None):
+def dispaly_people_list(func=None, askfor_order_atend=True):
     def display_people_here(people):
         display_people(people)
         game.plwait()
@@ -40,6 +40,8 @@ def dispaly_people_list(func=None):
 
     string = '---------------------------------------------------------------------------------------'
     game.pl(string, style='title')
+    if askfor_order_atend==True:
+        game.askfor_order()
 
 
 def summon_people(people_type='普通人'):

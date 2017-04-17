@@ -48,6 +48,7 @@ def save_func(return_func=None):
     def savehere(save_file_name):
         game.pl('save: ' + save_file_path)
         game.save(save_file_name)
+        save_func(return_func)
 
     for i in range(0, 11):
         save_file_name = 'save' + str(i)
@@ -63,4 +64,3 @@ def save_func(return_func=None):
     game.pl()
     game.pcmd('[99] 返回', 99, return_func)
     game.askfor_order()
-    save_func()

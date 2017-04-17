@@ -15,7 +15,7 @@ def group_manager():
 
 
 def display_group_list():
-    string = '----------------------------------' + '队伍配置' + '---------------------------------------------'
+    string = '----------------------------------' + '队伍列表' + '---------------------------------------------'
     game.pl(string, style='title')
     string = game.align('队伍编号', 15) + game.align('队伍名称', 15) + game.align('队伍队员', 15)
     game.pl(string)
@@ -24,20 +24,81 @@ def display_group_list():
         string = ''
         for i in range(0, 6):
             if agroup['队伍队员'][i] != {}:
-                string = string + agroup['队伍队员'][i] + '|'
+                string = string + agroup['队伍队员'][i]['姓名'] + '|'
         if string == '':
             string = '暂无队员'
         return string
 
     numid = 0
-    for w in game.data['队伍列表']:
+    for g in game.data['队伍列表']:
         id = '[{:0>3}]'.format(numid)
-        string = game.align(id, 15) + game.align(w['队伍名称'], 15) + display_memebr_of_groups(w)
-        game.pcmd(string + '\n', numid, lambda: None, arg=(numid,))
+        string = game.align(id, 15) + game.align(g['队伍名称'], 15) + display_memebr_of_groups(g)
+        game.pcmd(string + '\n', numid, group_control, arg=(g,))
         numid += 1
 
     string = '---------------------------------------------------------------------------------------'
     game.pl(string, style='title')
+
+
+def group_control(g):
+    import script.people
+    game.clr_cmd()
+    game.pline()
+    string = '----------------------------------' + '队伍配置' + '---------------------------------------------'
+    game.pl(string, style='title')
+    string = '队伍名称：  ' + g['队伍名称']
+    game.pl(string)
+    for i in range(0, 6):
+
+
+        def return_add_people_here():
+            place = i
+
+            def add_people_here(people):
+                add_people_to_group(g, people, place)
+                group_control(g)
+
+            return add_people_here
+
+        add_people_here = return_add_people_here()
+
+        # @lib.lock_outer_var(i)
+        # def add_people_here(people):
+        #     add_people_to_group(g, people, i)
+        #     group_control(g)
+
+        def return_cancel_people_here():
+            place = i
+
+            def cancel_people_here():
+                g['队伍队员'][place] = {}
+                group_control(g)
+
+            return cancel_people_here
+
+        cancel_people_here = return_cancel_people_here()
+
+        num_cmd = (i + 1) * 10
+
+        game.pcmd('[0' + str(i + 1) + '1]设置', num_cmd + 1, script.people.dispaly_people_list, arg=add_people_here)
+        game.pcmd('[0' + str(i + 1) + '2]清空', num_cmd + 2, cancel_people_here)
+        string = '     队员 ' + str(i) + '：  '
+        if g['队伍队员'][i] == {}:
+            string += '无'
+        else:
+            string += g['队伍队员'][i]['姓名']
+        game.p(string+'\n')
+    string = '---------------------------------------------------------------------------------------'
+    game.pl(string, style='title')
+
+    def add_people(people):
+        add_people_to_group(g, people)
+        group_control(g)
+
+    game.pcmd('[001]  添加队员', 1, script.people.dispaly_people_list, arg=add_people)
+    game.pl()
+    game.pcmd('[099]  返回列表', 99, group_manager)
+    game.askfor_order()
 
 
 def create_group():
@@ -45,8 +106,21 @@ def create_group():
     game.p('请输入队伍名称：', style='notice')
     name = game.askfor_str()
     tpl['队伍名称'] = name
+    tpl['ID'] = lib.get_id()
     tpl['队伍队员'] = []
     for i in range(0, 6):
         tpl['队伍队员'].append({})
     game.data['队伍列表'].append(tpl)
     group_manager()
+
+
+def add_people_to_group(g, people, place=-1):
+    if place == -1:
+        for i in range(0, 6):
+            if g['队伍队员'][i] == {}:
+                g['队伍队员'][i] = people
+                return True
+    if place >= 0 and place <= 5:
+        g['队伍队员'][place] = people
+        return True
+    return False
