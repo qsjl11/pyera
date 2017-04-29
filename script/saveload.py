@@ -14,6 +14,7 @@ def load_func(return_func=None):
     def loadhere(load_file_name):
         game.pl('load: ' + load_file_name)
         game.load(load_file_name)
+        script.mainflow.main_func()
 
     def loadnodata(load_file_name):
         game.pl(load_file_name + ": 没有数据")
@@ -21,7 +22,7 @@ def load_func(return_func=None):
 
     for i in range(0, 11):
         load_file_name = 'save' + str(i)
-        load_file_path = game.savedir + '\\' + load_file_name + '.json'
+        load_file_path = game.savedir + '\\' + load_file_name + '.save'
 
         # 此处修改显示信息
         if os.path.exists(load_file_path):
@@ -34,7 +35,6 @@ def load_func(return_func=None):
     game.pl()
     game.pcmd('[99] 返回', 99, return_func)
     game.askfor_order()
-    script.mainflow.main_func()
 
 
 def save_func(return_func=None):
@@ -52,7 +52,7 @@ def save_func(return_func=None):
 
     for i in range(0, 11):
         save_file_name = 'save' + str(i)
-        save_file_path = game.savedir + '\\' + save_file_name + '.json'
+        save_file_path = game.savedir + '\\' + save_file_name + '.save'
 
         # 此处修改显示信息
         if os.path.exists(save_file_path):

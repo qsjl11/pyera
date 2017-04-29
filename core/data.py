@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 import json
+import pickle
 import os
 
 _gamedata = {}
@@ -42,7 +43,7 @@ def _get_savefilename_path(filename):
     savepath = gamepath + '\\save'
     if not os.path.exists(savepath):
         os.makedirs(savepath)
-    filepath = savepath + '\\' + filename + '.json'
+    filepath = savepath + '\\' + filename + '.save'
     return filepath
 
 
@@ -50,16 +51,20 @@ def save(filename, data=None):
     if data == None:
         data = _gamedata
     filepath = _get_savefilename_path(filename)
-    with open(filepath, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False)
+    # with open(filepath, 'w', encoding='utf-8') as f:
+        # json.dump(data, f, ensure_ascii=False)
+    with open(filepath, 'wb') as f:
+        pickle.dump(data,f)
 
 
 def load(filename, selfdata=False):
     filepath = _get_savefilename_path(filename)
     data = {}
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            data = json.load(f)
+        # with open(filepath, 'r', encoding='utf-8') as f:
+            # data = json.load(f)
+        with open(filepath, 'rb') as f:
+            data=pickle.load(f)
     except FileNotFoundError:
         print(filepath + '  没有该存档文件')
     if selfdata == False:

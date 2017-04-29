@@ -40,7 +40,7 @@ def dispaly_people_list(func=None, askfor_order_atend=True):
 
     string = '---------------------------------------------------------------------------------------'
     game.pl(string, style='title')
-    if askfor_order_atend==True:
+    if askfor_order_atend == True:
         game.askfor_order()
 
 
@@ -86,7 +86,7 @@ def _summon_people(people_type='普通人'):
     tpl['ID'] = lib.get_id()
 
     # 调用事件
-    tpl=game.call_event_as_tube('生成人物', tpl)
+    tpl = game.call_event_as_tube('生成人物', tpl)
     return tpl
 
 
