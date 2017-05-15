@@ -32,8 +32,26 @@ def value_bar(vnow, vmax, length=30):
     string = '[{0}{1}] ({2}/{3})'.format('*' * show_sample, '-' * (length - show_sample), vnow, vmax)
     return string
 
+
 def get_e_by_ID(id_num, list):
     for p in list:
-        if p['ID']==id_num:
+        if p['ID'] == id_num:
             return p
     return None
+
+
+class IterExceptNoneInList():
+    def __init__(self, list):
+        self.l = iter(list)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        nextpeople = None
+        try:
+            while nextpeople == None:
+                nextpeople = next(self.l)
+            return nextpeople
+        except StopIteration:
+            raise StopIteration

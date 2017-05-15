@@ -5,58 +5,7 @@ import script.people
 import script.world
 import script.play_cfg
 from script.mainflow import main_func
-
-
-class Target_group():
-    def __init__(self, group_data):
-        self.data = group_data
-
-        def deal_people(p):
-            if p == {}:
-                return None
-            else:
-                return Target_people(p)
-
-        self.p1 = deal_people(group_data['队伍队员'][0])
-        self.p2 = deal_people(group_data['队伍队员'][1])
-        self.p3 = deal_people(group_data['队伍队员'][2])
-        self.p4 = deal_people(group_data['队伍队员'][3])
-        self.p5 = deal_people(group_data['队伍队员'][4])
-        self.p6 = deal_people(group_data['队伍队员'][5])
-        self.peoplelist = [self.p1, self.p2, self.p3, self.p4, self.p5, self.p6]
-
-
-class Target_people():
-    # def __str__(self):
-    #     return self.姓名 + ' ' + str(self.当前体力) + ' ' + str(self.体力上限) + ' '
-
-    def __init__(self, people_data):
-        self.data = people_data
-        self.姓名 = self.data['姓名']
-        self.当前体力 = self.data['属性']['体力上限']
-        self.体力上限 = self.data['属性']['体力上限']
-
-    def 近战鉴定(self, difficult):
-        here = self.data['经验']['近战经验'] * 5 + self.data['能力']['近战'] * 10
-        game.pl('近战经验*5+近战*10=' + str(here) + '  难度:' + str(difficult))
-        if difficult < here:
-            return True
-        else:
-            return False
-
-
-class Target_world():
-    def __init__(self, world_data):
-        self.data = world_data
-        self.当前进度 = 1
-        self.当前剧情 = world_data['剧情列表'][self.当前进度]
-
-
-class Target_scene():
-    def __init__(self, scene_data):
-        self.data = scene_data
-        self.名称 = self.data['名称']
-        self.难度 = self.data['难度']
+from script.target_class import *
 
 
 tgroup = None
@@ -79,12 +28,12 @@ def main_play():
     global tgroup, tworld, tscene
     game.clr_cmd()
     game.pline()
-    string = '剧情容量：' + lib.value_bar(tworld.当前进度, tworld.data['剧情容量'])
-    string += game.align('  下一剧情：' + tscene.名称, 40, 'right')
+    string = game.align('剧情容量:',14) + lib.value_bar(tworld.当前进度, tworld.data['剧情容量'])
+    string += game.align('下一剧情:' + tscene.名称, 30, 'right')
     game.pl(string)
-    for p in tgroup.peoplelist:
-        prefix = '人物体力(' + p.姓名 + ')：'
-        prefix = game.align(prefix, 20)
+    for p in tgroup.所有人物:
+        prefix = p.姓名 +'|体力:'
+        prefix = game.align(prefix, 14)
         game.pl(prefix + lib.value_bar(p.当前体力, p.体力上限))
     game.pline('--', 'notice')
 

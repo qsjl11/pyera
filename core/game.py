@@ -4,6 +4,7 @@ import core.flow
 import core.data
 import os
 import re
+import unicodedata
 
 # 字符串定义###########################################################
 NO_EVENT_FUNC='no_event_func'
@@ -144,25 +145,49 @@ clr_screen = io.clear_screen
 def_style = io.style_def
 
 
-def _is_chinese(uchar):
-    """判断一个unicode是否是汉字"""
-    if uchar >= u'\u4e00' and uchar <= u'\u9fa5':
-        return True
-    else:
-        return False
+def _block_size(char):
+    # Basic Latin, which is probably the most common case
+    #if char in xrange(0x0021, 0x007e):
+    #if char >= 0x0021 and char <= 0x007e:
+    char=ord(char)
+    if 0x0021 <= char <= 0x007e:
+        return 1
+    # Chinese, Japanese, Korean (common)
+    if 0x4e00 <= char <= 0x9fff:
+        return 2
+    # Hangul
+    if 0xac00 <= char <= 0xd7af:
+        return 2
+    # Combining?
+    if unicodedata.combining(chr(char)):
+        return 0
+    # Hiragana and Katakana
+    if 0x3040 <= char <= 0x309f or 0x30a0 <= char <= 0x30ff:
+        return 2
+    # Full-width Latin characters
+    if 0xff01 <= char <= 0xff60:
+        return 2
+    # CJK punctuation
+    if 0x3000 <= char <= 0x303e:
+        return 2
+    # Backspace and delete
+    if char in (0x0008, 0x007f):
+        return -1
+    # Other control characters
+    elif char in (0x0000, 0x000f, 0x001f):
+        return 0
+    # Take a guess
+    return 1
 
 
 def display_len(text):
     """计算字符串显示长度，中文长度2，英文长度1"""
     stext = str(text)
     # utext = stext.encode("utf-8")  # 对字符串进行转码
-    cn_count = 0
+    count = 0
     for u in stext:
-        if _is_chinese(u):
-            cn_count += 2  # 计算中文字符占用的宽度
-        else:
-            cn_count += 1  # 计算英文字符占用的宽度
-    return cn_count
+        count+=_block_size(u)
+    return count
 
 
 def align(text, width, just='left'):
@@ -230,6 +255,9 @@ def sort_event(event_name):
             event_mark=event_mark_dic[event_name][event_func]
             if event_mark==None:
                 return 99999999
+            if type(event_mark)==int:
+                return event_mark
+
             number=core.data.gamedata()['core_event_sort'][event_name][event_mark]
             return number
         except KeyError:
@@ -277,9 +305,14 @@ def bind_event_deco(event_name, event_mark=None):
     def decorate(func):
         bind_event(event_name, func, event_mark)
         return func
-
     return decorate
 
+def bind_only_event_deco(event_name, event_mark=None):
+    del_event(event_name)
+    def decorate(func):
+        bind_event(event_name, func, event_mark)
+        return func
+    return decorate
 
 import importlib
 
