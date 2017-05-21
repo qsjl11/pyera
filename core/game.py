@@ -261,6 +261,7 @@ def sort_event(event_name):
             number=core.data.gamedata()['core_event_sort'][event_name][event_mark]
             return number
         except KeyError:
+            print('招不到指定的event_key 再core_event_sort 中')
             return 99999999
 
     event_dic[event_name].sort(key=getkey)
@@ -294,6 +295,14 @@ def call_event_as_tube(event_name, target=None):
     for func in event_dic[event_name]:
         target = func(target)
     return target
+
+def return_event_func(event_name,event_mark=None):
+    if event_mark==None:
+        return event_dic[event_name][0]
+    else:
+        for k,v in event_mark_dic[event_name]:
+            if v==event_mark:
+                return k
 
 
 def del_event(event_name):

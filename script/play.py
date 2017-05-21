@@ -7,7 +7,6 @@ import script.play_cfg
 from script.mainflow import main_func
 from script.target_class import *
 
-
 tgroup = None
 tworld = None
 tscene = None
@@ -28,22 +27,25 @@ def main_play():
     global tgroup, tworld, tscene
     game.clr_cmd()
     game.pline()
-    string = game.align('剧情容量:',14) + lib.value_bar(tworld.当前进度, tworld.data['剧情容量'])
+    string = game.align('剧情容量:', 14) + lib.value_bar(tworld.当前进度, tworld.data['剧情容量'])
     string += game.align('下一剧情:' + tscene.名称, 30, 'right')
     game.pl(string)
     for p in tgroup.所有人物:
-        prefix = p.姓名 +'|体力:'
+        prefix = p.姓名 + '|体力:'
         prefix = game.align(prefix, 14)
         game.pl(prefix + lib.value_bar(p.当前体力, p.体力上限))
-    game.pline('--', 'notice')
+
+    string = '----------------------------------' + '设置剧情 ' + ': ' + tscene.名称 + ' --------------------------------'
+    game.pl(string, style='title')
+    game.call_event('设置剧情_' + tscene.名称, arg=(tscene.data,))
+    string = '---------------------------------------------------------------------------------------'
+    game.pl(string, style='title')
 
     def begin_scene():
         game.call_event('进行剧情_' + tworld.当前剧情['名称'], arg=(tgroup, tworld, tscene))
         main_play()
 
     game.pcmd('[100] 开始剧情', 100, begin_scene)
-    game.pl()
-    game.pcmd('[101] 调整剧情', 101, lambda: "break")
     game.pl()
     game.pcmd('[999] 结束试炼', 999, main_func)
     game.askfor_order()

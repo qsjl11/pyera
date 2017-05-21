@@ -12,3 +12,8 @@ def event_func_生成世界_基础世界(tpl):
     game.pl(tpl['剧情列表'])
     return tpl
 
+@game.bind_event_deco('设置世界_基础世界')
+def event_func_生成世界_基础世界(tpl):
+    game.pl('此处设置世界ID：'+str(tpl['ID']),'notice')
+    return tpl
+

@@ -3,6 +3,7 @@ import core.game as game
 import script.lib as lib
 from script.mainflow import main_func
 import copy
+from script.target_class import *
 import random
 
 
@@ -25,11 +26,37 @@ def display_world_list(func=None):
         string = game.align(w['ID'], 4) + game.align(w['世界名称'], 15) \
                  + game.align(w['剧情容量'], 15) + game.align(w['构建点数'], 15)
         if func == None:
-            game.pl(string)
-        else:
-            game.pcmd(string + '\n', w['ID'], func, arg=(w,))
+            func = display_world
+            # game.pl(string)
+        game.pcmd(string + '\n', w['ID'], func, arg=(w,))
     string = '---------------------------------------------------------------------------------------'
     game.pl(string, style='title')
+
+
+def display_world(w):
+    game.clr_cmd()
+    game.pline()
+    string = '----------------------------------' + '设置世界' + '---------------------------------------------'
+    game.pl(string, style='title')
+    string = game.align('ID', 4) + game.align('世界类型', 15) + game.align('剧情容量', 15) + game.align('构建点数', 15)
+    game.pl(string)
+    string = game.align(w['ID'], 4) + game.align(w['世界名称'], 15) \
+             + game.align(w['剧情容量'], 15) + game.align(w['构建点数'], 15)
+    game.pl(string)
+    game.pl('------------------------------------')
+    game.call_event('设置世界_' + w['世界名称'], arg=(w,))
+
+    for scene_num in range(0, w['剧情容量']):
+        s = w['剧情列表'][scene_num]
+        string = '----------------------------------' + '设置剧情 ' + str(scene_num) + ' :' + s[
+            '名称'] + ' --------------------------------'
+        game.pl(string, style='title')
+        game.call_event('设置剧情_' + s['名称'], arg=(s,))
+
+    string = '---------------------------------------------------------------------------------------'
+    game.pl(string, style='title')
+    game.pcmd('[099]  退出管理', 99, world_manager)
+    game.askfor_order()
 
 
 def create_world():

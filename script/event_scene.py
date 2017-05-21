@@ -3,12 +3,20 @@ import core.game as game
 
 
 @game.bind_event_deco('生成剧情_赤手蠢贼')
-def 生成剧情_赤手蠢贼():
-    tpl = {}
+def 生成剧情_赤手蠢贼(tpl={}):
     tpl['名称'] = '赤手蠢贼'
     tpl['难度'] = 1
     return tpl
 
+@game.bind_event_deco('设置剧情_赤手蠢贼')
+def 设置剧情_赤手蠢贼(tpl):
+    def set_difficult(num):
+        tpl['难度']=num
+    game.p('难度设置：1 / 3 / 5 / 7 / 9')
+
+@game.bind_event_deco('调整剧情_赤手蠢贼')
+def 调整剧情_赤手蠢贼(tpl):
+    game.p('难度设置：1 / 3 / 5 / 7 / 9')
 
 @game.bind_event_deco('进行剧情_赤手蠢贼')
 def 进行剧情_赤手蠢贼(tgroup, tworld, tscene):
