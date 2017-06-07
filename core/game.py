@@ -210,8 +210,21 @@ def pcmd(cmd_str, cmd_number, cmd_func, arg=(), kw={}, normal_style='standard', 
     core.flow.print_cmd(cmd_str, cmd_number, cmd_func, arg, kw, normal_style, on_style)
 
 
+# 获得一个没有用过的命令编号
+unused_cmd_num=500
+def get_unused_cmd_num():
+    global unused_cmd_num
+    unused_cmd_num +=1
+    return unused_cmd_num
+
 # 清除命令，没有参数则清除所有命令
-clr_cmd = core.flow.cmd_clear
+def clr_cmd(*number):
+    if number:
+        core.flow.cmd_clear(number)
+    else:
+        global  unused_cmd_num
+        unused_cmd_num = 500
+        core.flow.cmd_clear()
 
 # 绑定或重新绑定一个命令
 bind_cmd = core.flow.bind_cmd
@@ -276,6 +289,17 @@ def call_event(event_name, arg=(), kw={}):
     re = NO_EVENT_FUNC
     for func in event_dic[event_name]:
         re = func(*arg, **kw)
+    return re
+
+def call_event_with_mark(event_name, event_mark, arg=(), kw={}):
+    if not event_name in event_dic.keys():
+        def_event(event_name)
+
+    if not isinstance(arg, tuple):
+        arg = (arg,)
+
+    func=return_event_func(event_name, event_mark)
+    re = func(*arg, **kw)
     return re
 
 

@@ -106,6 +106,8 @@ def askfor_int(print_order=False):
         if order.isdigit():
             return int(order)
         else:
+            if order == '':
+                continue
             io.print('\n' + "不是有效数字" + '\n')
 
 

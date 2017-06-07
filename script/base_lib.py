@@ -13,6 +13,27 @@ def yes_or_no():
         if ans == 1:
             return False
 
+def list_cmd( print_list, func_list ,first_cmd_num=None, spilt_mark=' / '):
+    if len(print_list)!=len(func_list):
+        game.pwarn("list_choice调用,print_list和func_list不匹配")
+    for n in range(len(print_list)):
+        if first_cmd_num==None:
+            cmd_num=game.get_unused_cmd_num()
+        else:
+            cmd_num=first_cmd_num+n
+        cmd_str='['+str(cmd_num)+'] '+str(print_list[n]) +spilt_mark
+        game.pcmd(cmd_str, cmd_num, func_list[n])
+
+def list_nums( num_list, deal_func, first_cmd_num=None, split_mark=' / '):
+    def create_func(n):
+        def _func():
+            deal_func(n)
+        return _func
+    func_list=[]
+    for nn in num_list:
+        func_list.append(create_func(nn))
+    list_cmd(num_list,func_list, first_cmd_num, split_mark)
+
 
 def get_id():
     if not 'last_id' in game.data:

@@ -9,11 +9,12 @@ def event_func_生成世界_基础世界(tpl):
     for i in range(0,tpl['剧情容量']):
         tpl['剧情列表'].append(game.call_event('生成剧情_赤手蠢贼'))
     game.pl('剧情列表：','notice')
-    game.pl(tpl['剧情列表'])
+    juqingstr=' '.join([s['名称'] for s in tpl['剧情列表']])
+    game.pl(juqingstr)
     return tpl
 
 @game.bind_event_deco('设置世界_基础世界')
-def event_func_生成世界_基础世界(tpl):
+def event_func_设置世界_基础世界(tpl):
     game.pl('此处设置世界ID：'+str(tpl['ID']),'notice')
     return tpl
 

@@ -79,7 +79,7 @@ def _create_world(type_id):
     tpl = copy.deepcopy(game.data['世界'][type_id])
     tpl = game.call_event('生成世界_' + tpl['世界名称'], arg=(tpl,))
     # 是否创建世界
-    game.pl("保留新世界：" + tpl['世界名称'] + "?")
+    game.pl("创建世界：" + tpl['世界名称'] + "?","notice")
     ans = lib.yes_or_no()
     game.pl()
     if ans == True:
