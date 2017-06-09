@@ -12,12 +12,15 @@ if core.cfg.platform == 'win':
     from core.winframe import *
 
 import threading
+import queue
+import json
 
 import sys
+
 sys.setrecursionlimit(100000)
 
 input_evnet = threading.Event()
-
+_send_queue = queue.Queue()
 order_swap = None
 
 
@@ -32,6 +35,7 @@ def getorder():
 
 
 bind_return(_input_evnet_set)
+bind_queue(_send_queue)
 
 
 def _get_input_event():
@@ -43,6 +47,121 @@ _foreground = '#C8C8C8'
 _background = '#2C4A69'
 _font = '微软雅黑'
 _fontsize = '14'
+
+
+def run(open_func):
+    global _flowthread
+    _flowthread = threading.Thread(target=open_func, name='flowthread')
+    _flowthread.start()
+    core.winframe._run()
+
+
+def putQ(message):
+    _send_queue.put_nowait(message)
+
+
+# def getQ():
+#     return _send_queue.get_nowait()
+#
+# def isemptyQ():
+#     return _send_queue.empty()
+
+# #######################################################################
+# json 构建函数
+
+def new_json():
+    flowjson = {}
+    flowjson['content'] = []
+    return flowjson
+
+
+def text_json(string, style):
+    re = {}
+    re['type'] = 'text'
+    # re['text'] = string.replace('\n', '<br/>')
+    re['text'] = string
+    if type(style) == tuple:
+        re['style'] = style
+    if type(style) == type(''):
+        re['style'] = (style,)
+    return re
+
+
+def cmd_json(cmd_str, cmd_num, normal_style, on_style):
+    re = {}
+    re['type'] = 'cmd'
+    # re['text'] = cmd_str.replace('\n', '<br/>')
+    re['text'] = cmd_str
+    re['num'] = cmd_num
+    if type(normal_style) == tuple:
+        re['normal_style'] = normal_style
+    if type(normal_style) == type(''):
+        re['normal_style'] = (normal_style,)
+
+    if type(on_style) == tuple:
+        re['on_style'] = on_style
+    if type(on_style) == type(''):
+        re['on_style'] = (on_style,)
+    return re
+
+
+def style_json(style_name, foreground, background, font, fontsize, bold, underline, italic):
+    re = {}
+    re['style_name'] = style_name
+    re['foreground'] = foreground
+    re['background'] = background
+    re['font'] = font
+    re['fontsize'] = fontsize
+    re['bold'] = bold
+    re['underline'] = underline
+    re['italic'] = italic
+    return re
+
+
+# #######################################################################
+# 输出格式化
+
+def print(string, style='standard'):
+    jsonstr = new_json()
+    jsonstr['content'].append(text_json(string, style))
+    putQ(json.dumps(jsonstr, ensure_ascii=False))
+
+
+def clear_screen():
+    jsonstr = new_json()
+    jsonstr['clear_cmd'] = 'true'
+    putQ(json.dumps(jsonstr, ensure_ascii=False))
+
+
+def frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic):
+    jsonstr = new_json()
+    jsonstr['set_style'] = style_json(style_name, foreground, background, font, fontsize, bold, underline, italic)
+    putQ(json.dumps(jsonstr, ensure_ascii=False))
+
+
+def set_background(color):
+    jsonstr = new_json()
+    jsonstr['bgcolor'] = color
+    putQ(json.dumps(jsonstr, ensure_ascii=False))
+
+
+# ############################################################
+
+# 命令生成函数
+def io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutton'):
+    jsonstr = new_json()
+    jsonstr['content'].append(cmd_json(cmd_str, cmd_number, normal_style, on_style))
+    putQ(json.dumps(jsonstr, ensure_ascii=False))
+
+
+# 清除命令函数
+def io_clear_cmd(*cmd_numbers):
+    jsonstr = new_json()
+    if cmd_numbers:
+        jsonstr['clearcmd_cmd'] = cmd_numbers
+    else:
+        jsonstr['clearcmd_cmd'] = 'all'
+    putQ(json.dumps(jsonstr, ensure_ascii=False))
 
 
 def style_def(style_name, foreground=_foreground, background=_background, font=_font, fontsize=_fontsize, bold=False,
