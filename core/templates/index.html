@@ -58,6 +58,11 @@
         }
         $("#textbox").append(appendstr);
         $(idstr).addClass(item.normal_style);
+//        $.each(item.normal_style,$(idstr).addClass);
+//        for( var s in item.normal_style) {
+//            console.log(s);
+//            $(idstr).addClass(s);
+//        }
         $(idstr).bind("click", function () {
             cmdsendorder(item.num);
             event.stopPropagation();

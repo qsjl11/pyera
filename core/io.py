@@ -21,17 +21,19 @@ sys.setrecursionlimit(100000)
 
 input_evnet = threading.Event()
 _send_queue = queue.Queue()
+_order_queue = queue.Queue()
 order_swap = None
 
 
 def _input_evnet_set(order):
-    global order_swap
-    order_swap = order
-    input_evnet.set()
+    putOrder(order)
+    # global order_swap
+    # order_swap = order
+    # input_evnet.set()
 
 
 def getorder():
-    return order_swap
+    return _order_queue.get()
 
 
 bind_return(_input_evnet_set)
@@ -53,18 +55,17 @@ def run(open_func):
     global _flowthread
     _flowthread = threading.Thread(target=open_func, name='flowthread')
     _flowthread.start()
-    core.winframe._run()
+    if core.cfg.platform == 'web':
+        core.webframe._run()
+    if core.cfg.platform == 'win':
+        core.winframe._run()
 
 
 def putQ(message):
     _send_queue.put_nowait(message)
 
-
-# def getQ():
-#     return _send_queue.get_nowait()
-#
-# def isemptyQ():
-#     return _send_queue.empty()
+def putOrder(message):
+    _order_queue.put_nowait(message)
 
 # #######################################################################
 # json 构建函数
