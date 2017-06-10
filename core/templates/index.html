@@ -58,6 +58,11 @@
         }
         $("#textbox").append(appendstr);
         $(idstr).addClass(item.normal_style);
+//        $.each(item.normal_style,$(idstr).addClass);
+//        for( var s in item.normal_style) {
+//            console.log(s);
+//            $(idstr).addClass(s);
+//        }
         $(idstr).bind("click", function () {
             cmdsendorder(item.num);
             event.stopPropagation();
@@ -145,6 +150,7 @@
 
     run = function () {
         var socket = io.connect('http://127.0.0.1:5000/test');
+//        var socket = io.connect('http://10.235.200.139:5000/test');
         socket_global = socket;
         socket.on('game_display', function (data) {
             show(data);

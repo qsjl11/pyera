@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 import core.io as io
-
+import time
 # 管理flow
 flow_map = {}
 
@@ -72,8 +72,10 @@ def order_deal(flag='order', print_order=True):
     global __skip_flag__
     __skip_flag__ = False
     while True:
-        io._get_input_event().clear()
-        io._get_input_event().wait()
+        time.sleep(0.01)
+        # io._get_input_event().clear()
+        # io._get_input_event().wait()
+        size = io._order_queue.qsize()
         order = io.getorder()
         if order == '_reset_this_game_':
             reset_func()
@@ -88,6 +90,7 @@ def order_deal(flag='order', print_order=True):
             return io.getorder()
 
         if flag == 'console':
+            #TODO add_console_method
             exec(io.getorder())
 
 

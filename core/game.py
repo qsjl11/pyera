@@ -98,7 +98,7 @@ def wait():
 last_char = '\n'
 
 
-def p(string, style=('standard',)):
+def p(string, style='standard'):
     global last_char
     if len(string) > 0:
         last_char = string[-1:]

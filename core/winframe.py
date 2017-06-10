@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter import ttk
 import sys
 import threading
+import json
 import uuid
 
 # 显示主框架
@@ -85,10 +86,37 @@ root.bind('<Return>', send_input)
 _flowthread = None
 
 
-def run(open_func):
-    global _flowthread
-    _flowthread = threading.Thread(target=open_func, name='flowthread')
-    _flowthread.start()
+def read_queue():
+    while not _queue.empty():
+        quenestr = _queue.get()
+        jsonstr = json.loads(quenestr)
+
+        if 'clear_cmd' in jsonstr.keys() and jsonstr['clear_cmd'] == 'true':
+            _clear_screen()
+        if 'clearorder_cmd' in jsonstr.keys() and jsonstr['clearorder_cmd'] == 'true':
+            clearorder()
+        if 'clearcmd_cmd' in jsonstr.keys():
+            cmd_nums = jsonstr['clearcmd_cmd']
+            if cmd_nums == "all":
+                _io_clear_cmd()
+            else:
+                _io_clear_cmd(tuple(cmd_nums))
+        if 'bgcolor' in jsonstr.keys() :
+            set_background(jsonstr['bgcolor'])
+        if 'set_style' in jsonstr.keys():
+            temp=jsonstr['set_style']
+            _frame_style_def(temp['style_name'],temp['foreground'],temp['background'],temp['font'],
+                             temp['fontsize'],temp['bold'],temp['underline'],temp['italic'])
+        for c in jsonstr['content']:
+            if c['type']=='text':
+                _print(c['text'], style=tuple(c['style']))
+            if c['type'] == 'cmd':
+                _io_print_cmd(c['text'],c['num'],normal_style=tuple(c['normal_style']),on_style=tuple(c['on_style']))
+    root.after(10, read_queue)
+
+
+def _run():
+    root.after(10, read_queue)
     root.mainloop()
 
 
@@ -105,9 +133,17 @@ def set_background(color):
 # ######################################################################
 # 双框架公共函数
 
+_queue = None
+
+
 def bind_return(func):
     global input_event_func
     input_event_func = func
+
+
+def bind_queue(q):
+    global _queue
+    _queue = q
 
 
 # #######################################################################
@@ -116,25 +152,25 @@ def bind_return(func):
 sysprint = print
 
 
-def print(string, style=('standard',)):
+def _print(string, style=('standard',)):
     textbox.insert('end', string, style)
     seeend()
 
 
-def clear_screen():
-    io_clear_cmd()
+def _clear_screen():
+    _io_clear_cmd()
     textbox.delete('1.0', END)
 
 
-def frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic):
+def _frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic):
     # include foreground, background, font, size, bold, underline, slant
 
     # font_str = font + ' ' + fontsize + ['', ' bold'][bold == True] + ['', ' underline'][underline == True] + \
     #            ['', ' italic'][italic == True]
-    font_list=[]
+    font_list = []
     font_list.append(font)
     font_list.append(fontsize)
-    if bold==True:
+    if bold == True:
         font_list.append('bold')
     if underline == True:
         font_list.append('underline')
@@ -164,12 +200,12 @@ cmd_tag_map = {}
 
 
 # 命令生成函数
-def io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutton'):
+def _io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutton'):
     global cmd_tag_map
     cmd_tagname = str(uuid.uuid1())
     textbox.tag_configure(cmd_tagname)
     if cmd_number in cmd_tag_map:
-        io_clear_cmd(cmd_number)
+        _io_clear_cmd(cmd_number)
     cmd_tag_map[cmd_number] = cmd_tagname
 
     def send_cmd(*args):
@@ -187,11 +223,11 @@ def io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutto
     textbox.tag_bind(cmd_tagname, '<1>', send_cmd)
     textbox.tag_bind(cmd_tagname, '<Enter>', enter_func)
     textbox.tag_bind(cmd_tagname, '<Leave>', leave_func)
-    print(cmd_str, style=(cmd_tagname, normal_style))
+    _print(cmd_str, style=(cmd_tagname, normal_style))
 
 
 # 清除命令函数
-def io_clear_cmd(*cmd_numbers):
+def _io_clear_cmd(*cmd_numbers):
     global cmd_tag_map
     if cmd_numbers:
         for num in cmd_numbers:

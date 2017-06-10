@@ -15,7 +15,8 @@ input_event_func = None
 app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = ''
-socketio = SocketIO(app, async_mode='threading')
+socketio = SocketIO(app, async_mode='eventlet')
+
 flowthread = None
 
 open_func = None
@@ -25,19 +26,19 @@ sysprint = print
 # #######################################################################
 # json 构建函数
 
-def init_flowjson():
+def _init_flowjson():
     global flowjson
     flowjson.clear()
     flowjson['content'] = []
 
 
-def new_json():
+def _new_json():
     flowjson = {}
     flowjson['content'] = []
     return flowjson
 
 
-def text_json(string, style):
+def _text_json(string, style):
     re = {}
     re['type'] = 'text'
     re['text'] = string.replace('\n', '<br/>')
@@ -45,7 +46,7 @@ def text_json(string, style):
     return re
 
 
-def cmd_json(cmd_str, cmd_num, normal_style, on_style):
+def _cmd_json(cmd_str, cmd_num, normal_style, on_style):
     re = {}
     re['type'] = 'cmd'
     re['text'] = cmd_str.replace('\n', '<br/>')
@@ -55,7 +56,7 @@ def cmd_json(cmd_str, cmd_num, normal_style, on_style):
     return re
 
 
-def style_json(style_name, foreground, background, font, fontsize, bold, underline, italic):
+def _style_json(style_name, foreground, background, font, fontsize, bold, underline, italic):
     re = {}
     re['style_name'] = style_name
     re['foreground'] = foreground
@@ -71,9 +72,8 @@ def style_json(style_name, foreground, background, font, fontsize, bold, underli
 # #######################################################################
 # 运行逻辑
 
-def run(open_flow):
-    global open_func
-    open_func = open_flow
+def _run():
+    # socketio.run(app, host='0.0.0.0')
     socketio.run(app)
 
 
@@ -85,42 +85,83 @@ def send_input(*args):
 
 
 def set_background(color):
-    jsonstr = new_json()
+    jsonstr = _new_json()
     jsonstr['bgcolor'] = color
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
 # ######################################################################
 # ######################################################################
-# ######################################################################
+sumup=0
+sumtime=0
+def read_queue():
+    while True:
+        if not _queue.empty():
+            quenestr = _queue.get()
+            jsonstr = json.loads(quenestr)
+
+            if 'clear_cmd' in jsonstr.keys() and jsonstr['clear_cmd'] == 'true':
+                _clear_screen()
+            if 'clearorder_cmd' in jsonstr.keys() and jsonstr['clearorder_cmd'] == 'true':
+                clearorder()
+            if 'clearcmd_cmd' in jsonstr.keys():
+                cmd_nums = jsonstr['clearcmd_cmd']
+                if cmd_nums == "all":
+                    _io_clear_cmd()
+                else:
+                    _io_clear_cmd(tuple(cmd_nums))
+            if 'bgcolor' in jsonstr.keys():
+                set_background(jsonstr['bgcolor'])
+            if 'set_style' in jsonstr.keys():
+                temp = jsonstr['set_style']
+                _frame_style_def(temp['style_name'], temp['foreground'], temp['background'], temp['font'],
+                                 temp['fontsize'], temp['bold'], temp['underline'], temp['italic'])
+            for c in jsonstr['content']:
+                if c['type'] == 'text':
+                    _print(c['text'], style=' '.join(c['style']))
+                if c['type'] == 'cmd':
+                    _io_print_cmd(c['text'], c['num'], normal_style=' '.join(c['normal_style']), on_style=' '.join(c['on_style']))
+                    # _io_print_cmd(c['text'], c['num'])
+        socketio.sleep(0.01)
+        global sumup, sumtime
+        sumup +=1
+        if sumup >200:
+            sumup=0
+            sumtime +=1
+            sysprint(sumtime)
+
 # 双框架公共函数
+_queue = None
 
 def bind_return(func):
     global input_event_func
     input_event_func = func
     return
 
+def bind_queue(q):
+    global _queue
+    _queue = q
 
 # #######################################################################
 # 输出格式化
 
 # @copy_current_request_context
-def print(string, style='standard'):
-    jsonstr = new_json()
-    jsonstr['content'].append(text_json(string, style))
+def _print(string, style='standard'):
+    jsonstr = _new_json()
+    jsonstr['content'].append(_text_json(string, style))
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
-def clear_screen():
+def _clear_screen():
     # io_clear_cmd()
-    jsonstr = new_json()
+    jsonstr = _new_json()
     jsonstr['clear_cmd'] = 'true'
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
-def frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic):
-    jsonstr = new_json()
-    jsonstr['set_style'] = style_json(style_name, foreground, background, font, fontsize, bold, underline, italic)
+def _frame_style_def(style_name, foreground, background, font, fontsize, bold, underline, italic):
+    jsonstr = _new_json()
+    jsonstr['set_style'] = _style_json(style_name, foreground, background, font, fontsize, bold, underline, italic)
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
@@ -138,7 +179,7 @@ def setorder(orderstr):
 
 
 def clearorder():
-    jsonstr = new_json()
+    jsonstr = _new_json()
     jsonstr['clearorder_cmd'] = 'true'
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
@@ -146,15 +187,15 @@ def clearorder():
 # ############################################################
 
 # 命令生成函数
-def io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutton'):
-    jsonstr = new_json()
-    jsonstr['content'].append(cmd_json(cmd_str, cmd_number, normal_style, on_style))
+def _io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutton'):
+    jsonstr = _new_json()
+    jsonstr['content'].append(_cmd_json(cmd_str, cmd_number, normal_style, on_style))
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')
 
 
 # 清除命令函数
-def io_clear_cmd(*cmd_numbers):
-    jsonstr = new_json()
+def _io_clear_cmd(*cmd_numbers):
+    jsonstr = _new_json()
     if cmd_numbers:
         jsonstr['clearcmd_cmd'] = cmd_numbers
     else:
@@ -179,7 +220,7 @@ def test_connect(*args):
 
     try:
         if flowthread == None:
-            flowthread = socketio.start_background_task(target=open_func)
+            flowthread = socketio.start_background_task(target=read_queue)
 
     except Exception as e:
         return str(e)
@@ -187,6 +228,7 @@ def test_connect(*args):
 
 @socketio.on('dealorder', namespace='/test')
 def test_message(value):
+    sysprint('dealorder')
     try:
         setorder(value)
         send_input()
@@ -197,3 +239,5 @@ def test_message(value):
 @socketio.on('connect', namespace='/test')
 def test_connect():
     sysprint('connected')
+    setorder('_reset_this_game_')
+    send_input()
