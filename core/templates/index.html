@@ -150,6 +150,7 @@
 
     run = function () {
         var socket = io.connect('http://127.0.0.1:5000/test');
+//        var socket = io.connect('http://10.235.200.139:5000/test');
         socket_global = socket;
         socket.on('game_display', function (data) {
             show(data);

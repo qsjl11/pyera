@@ -73,6 +73,7 @@ def _style_json(style_name, foreground, background, font, fontsize, bold, underl
 # 运行逻辑
 
 def _run():
+    # socketio.run(app, host='0.0.0.0')
     socketio.run(app)
 
 
@@ -91,36 +92,43 @@ def set_background(color):
 
 # ######################################################################
 # ######################################################################
-
+sumup=0
+sumtime=0
 def read_queue():
-    while not _queue.empty():
-        quenestr = _queue.get()
-        jsonstr = json.loads(quenestr)
+    while True:
+        if not _queue.empty():
+            quenestr = _queue.get()
+            jsonstr = json.loads(quenestr)
 
-        if 'clear_cmd' in jsonstr.keys() and jsonstr['clear_cmd'] == 'true':
-            _clear_screen()
-        if 'clearorder_cmd' in jsonstr.keys() and jsonstr['clearorder_cmd'] == 'true':
-            clearorder()
-        if 'clearcmd_cmd' in jsonstr.keys():
-            cmd_nums = jsonstr['clearcmd_cmd']
-            if cmd_nums == "all":
-                _io_clear_cmd()
-            else:
-                _io_clear_cmd(tuple(cmd_nums))
-        if 'bgcolor' in jsonstr.keys():
-            set_background(jsonstr['bgcolor'])
-        if 'set_style' in jsonstr.keys():
-            temp = jsonstr['set_style']
-            _frame_style_def(temp['style_name'], temp['foreground'], temp['background'], temp['font'],
-                             temp['fontsize'], temp['bold'], temp['underline'], temp['italic'])
-        for c in jsonstr['content']:
-            if c['type'] == 'text':
-                _print(c['text'], style=' '.join(c['style']))
-            if c['type'] == 'cmd':
-                _io_print_cmd(c['text'], c['num'], normal_style=' '.join(c['normal_style']), on_style=' '.join(c['on_style']))
-                # _io_print_cmd(c['text'], c['num'])
-    socketio.sleep(0.01)
-    read_queue()
+            if 'clear_cmd' in jsonstr.keys() and jsonstr['clear_cmd'] == 'true':
+                _clear_screen()
+            if 'clearorder_cmd' in jsonstr.keys() and jsonstr['clearorder_cmd'] == 'true':
+                clearorder()
+            if 'clearcmd_cmd' in jsonstr.keys():
+                cmd_nums = jsonstr['clearcmd_cmd']
+                if cmd_nums == "all":
+                    _io_clear_cmd()
+                else:
+                    _io_clear_cmd(tuple(cmd_nums))
+            if 'bgcolor' in jsonstr.keys():
+                set_background(jsonstr['bgcolor'])
+            if 'set_style' in jsonstr.keys():
+                temp = jsonstr['set_style']
+                _frame_style_def(temp['style_name'], temp['foreground'], temp['background'], temp['font'],
+                                 temp['fontsize'], temp['bold'], temp['underline'], temp['italic'])
+            for c in jsonstr['content']:
+                if c['type'] == 'text':
+                    _print(c['text'], style=' '.join(c['style']))
+                if c['type'] == 'cmd':
+                    _io_print_cmd(c['text'], c['num'], normal_style=' '.join(c['normal_style']), on_style=' '.join(c['on_style']))
+                    # _io_print_cmd(c['text'], c['num'])
+        socketio.sleep(0.01)
+        global sumup, sumtime
+        sumup +=1
+        if sumup >200:
+            sumup=0
+            sumtime +=1
+            sysprint(sumtime)
 
 # 双框架公共函数
 _queue = None
