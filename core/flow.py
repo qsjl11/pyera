@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import core.io as io
 import time
+
 # 管理flow
 flow_map = {}
 
@@ -28,17 +29,38 @@ def get_flow(flow_name):
 cmd_map = {}
 
 
+def default_tail_deal_cmd_func(order):
+    return
+
+
+tail_deal_cmd_func = default_tail_deal_cmd_func
+
+
+def set_tail_deal_cmd_func(func):
+    global tail_deal_cmd_func
+    tail_deal_cmd_func = func
+
+def deco_set_tail_deal_cmd_func(func):
+    set_tail_deal_cmd_func(func)
+    return func
+
 def bind_cmd(cmd_number, cmd_func, arg=(), kw={}):
     if not isinstance(arg, tuple):
         arg = (arg,)
+    if cmd_func==null_func:
+        cmd_map[cmd_number] = null_func
+        return
 
     def run_func():
         cmd_func(*arg, **kw)
-
     cmd_map[cmd_number] = run_func
 
 
-def print_cmd(cmd_str, cmd_number, cmd_func, arg=(), kw={}, normal_style='standard', on_style='onbutton'):
+def null_func():
+    return
+
+
+def print_cmd(cmd_str, cmd_number, cmd_func=null_func, arg=(), kw={}, normal_style='standard', on_style='onbutton'):
     '''arg is tuple contain args which cmd_func could be used'''
     bind_cmd(cmd_number, cmd_func, arg, kw)
     io.io_print_cmd(cmd_str, cmd_number, normal_style, on_style)
@@ -46,6 +68,7 @@ def print_cmd(cmd_str, cmd_number, cmd_func, arg=(), kw={}, normal_style='standa
 
 
 def cmd_clear(*number):
+    set_tail_deal_cmd_func(default_tail_deal_cmd_func)
     if number:
         for num in number:
             cmd_map.pop(num)
@@ -60,7 +83,8 @@ def _cmd_deal(order_number):
 
 
 def _cmd_valid(order_number):
-    return order_number in cmd_map.keys()
+    re=(order_number in cmd_map.keys()) and (cmd_map[int(order_number)] != null_func)
+    return re
 
 
 __skip_flag__ = False
@@ -73,25 +97,27 @@ def order_deal(flag='order', print_order=True):
     __skip_flag__ = False
     while True:
         time.sleep(0.01)
-        # io._get_input_event().clear()
-        # io._get_input_event().wait()
-        size = io._order_queue.qsize()
         order = io.getorder()
         if order == '_reset_this_game_':
             reset_func()
         if print_order == True and order != '' and order != 'skip_all_wait':
             io.print('\n' + order + '\n')
-        if flag == 'order':
-            if order.isdigit() and _cmd_valid(int(order)):
-                _cmd_deal(int(order))
-                return
 
         if flag == 'str':
-            return io.getorder()
+            return order
 
         if flag == 'console':
-            #TODO add_console_method
-            exec(io.getorder())
+            # TODO add_console_method
+            exec(order)
+
+        if flag == 'order' and order.isdigit():
+            if _cmd_valid(int(order)):
+                _cmd_deal(int(order))
+                return
+            else:
+                global tail_deal_cmd_func
+                tail_deal_cmd_func(int(order))
+                return
 
 
 def askfor_str(donot_return_null_str=True, print_order=False):

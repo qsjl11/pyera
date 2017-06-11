@@ -85,6 +85,12 @@ askfor_str = core.flow.askfor_str
 # 请求输入一个数字
 askfor_int = core.flow.askfor_int
 
+# 设置尾命令处理函数
+set_deal_cmd_func=core.flow.set_tail_deal_cmd_func
+
+# 设置尾命令处理函数装饰器
+set_deal_cmd_func_deco=core.flow.deco_set_tail_deal_cmd_func
+
 # 清空输入栏
 clr_order = io.clearorder
 
@@ -203,7 +209,7 @@ def align(text, width, just='left'):
 # 命令相关函数#################################################################
 
 # 输出命令
-def pcmd(cmd_str, cmd_number, cmd_func, arg=(), kw={}, normal_style='standard', on_style='onbutton'):
+def pcmd(cmd_str, cmd_number, cmd_func=core.flow.null_func, arg=(), kw={}, normal_style='standard', on_style='onbutton'):
     global last_char
     if len(cmd_str) > 0:
         last_char = cmd_str[-1:]

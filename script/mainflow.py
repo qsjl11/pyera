@@ -30,11 +30,23 @@ def open_func(*args):
 
 
 def open_menu():
+    # game.pline()
+    # game.pcmd('[001]  开始游戏', 1, newgame_func)
+    # game.pl()
+    # game.pcmd('[002]  读取游戏', 2, saveload.load_func, arg=(open_menu,))
+    # game.askfor_order()
+
     game.pline()
-    game.pcmd('[001]  开始游戏', 1, newgame_func)
+    game.pcmd('[001]  开始游戏', 1)
     game.pl()
-    game.pcmd('[002]  读取游戏', 2, saveload.load_func, arg=(open_menu,))
-    game.askfor_order()
+    game.pcmd('[002]  读取游戏', 2)
+
+    @game.set_deal_cmd_func_deco
+    def deal_func(order):
+        if order==1:
+            newgame_func()
+        if order==2:
+            saveload.load_func(open_menu)
 
 
 def newgame_func():
