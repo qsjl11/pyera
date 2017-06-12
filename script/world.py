@@ -36,6 +36,7 @@ def display_world_list(func=None):
 def display_world(w):
     game.clr_cmd()
     game.pline()
+    game.set_default_flow(display_world, arg=(w,))
     string = '----------------------------------' + '设置世界' + '---------------------------------------------'
     game.pl(string, style='title')
     string = game.align('ID', 4) + game.align('世界类型', 15) + game.align('剧情容量', 15) + game.align('构建点数', 15)
@@ -56,8 +57,6 @@ def display_world(w):
     string = '---------------------------------------------------------------------------------------'
     game.pl(string, style='title')
     game.pcmd('[099]  退出管理', 99, world_manager)
-    game.askfor_order()
-
 
 def create_world():
     game.clr_cmd()

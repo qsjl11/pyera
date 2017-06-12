@@ -33,6 +33,7 @@ def init(main_flow):
     fontsize = core.data.gamedata()['core_cfg']['font_size']
     io.init_style(foreground_c, background_c, onbutton_color, font, fontsize)
     io.style_def('warning', foreground='red', underline=True)
+    io.style_def('special', foreground='yellow')
     def_style = io.style_def
     core.flow.reset_func = reset
 
@@ -47,6 +48,7 @@ def init(main_flow):
                 main_flow()
                 _have_run=True
             askfor_order()
+            core.flow.call_default_flow()
 
     run_main_flow()
 
@@ -99,6 +101,10 @@ clr_order = io.clearorder
 def wait():
     core.flow.askfor_wait()
 
+# 流程控制函数
+set_default_flow=core.flow.set_default_flow
+call_default_flow=core.flow.call_default_flow
+clear_default_flow=core.flow.clear_default_flow
 
 # 输出相关函数#############################################################
 last_char = '\n'

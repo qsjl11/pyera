@@ -1,20 +1,22 @@
 # -*- coding: UTF-8 -*-
 import core.game as game
 import script.lib as lib
+import random
 
 
 @game.bind_event_deco('生成剧情_赤手蠢贼')
-def 生成剧情_赤手蠢贼(tpl={}):
+def 生成剧情_赤手蠢贼():
+    tpl={}
     tpl['名称'] = '赤手蠢贼'
-    tpl['难度'] = 1
+    tpl['难度'] = random.choice([1,3,5,7,9])
     return tpl
 
 @game.bind_event_deco('设置剧情_赤手蠢贼')
 def 设置剧情_赤手蠢贼(tpl):
-    def set_difficult(num):
-        tpl['难度']=num
     game.p('难度设置：')
-    lib.list_nums([1,3,5,7,9],set_difficult)
+    def set(x):
+        tpl['难度']=x
+    lib.list_nums([1,3,5,7,9],set , tpl['难度'])
 
 @game.bind_event_deco('调整剧情_赤手蠢贼')
 def 调整剧情_赤手蠢贼(tpl):

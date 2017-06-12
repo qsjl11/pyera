@@ -92,4 +92,4 @@ def main_func():
     game.pcmd('[111]  保存游戏', 111, saveload.save_func)
     game.p('    ')
     game.pcmd('[112]  读取游戏', 112, saveload.load_func)
-    # game.askfor_order()
+

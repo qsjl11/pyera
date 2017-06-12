@@ -2,28 +2,30 @@
 import core.io as io
 import time
 
+def null_func():
+    return
+
 # 管理flow
-flow_map = {}
+default_flow=null_func
 
+def set_default_flow(func, arg=(), kw={}):
+    global  default_flow
+    if not isinstance(arg, tuple):
+        arg = (arg,)
+    if func==null_func:
+        default_flow = null_func
+        return
 
-def create_flow(flow_name):
-    def real_deco(func):
-        if flow_name == None:
-            theflow_name = func.__name__
-        else:
-            theflow_name = flow_name
-        flow_map[theflow_name] = func
-        return func
+    def run_func():
+        func(*arg, **kw)
+    default_flow = run_func
 
-    return real_deco
+def call_default_flow():
+    default_flow()
 
-
-def get_flow(flow_name):
-    if flow_name in flow_map.keys():
-        return flow_map[flow_name]
-    else:
-        io.print(flow_name + ' :没有该流程，或该流程没有被加载')
-
+def clear_default_flow():
+    global default_flow, null_func
+    set_default_flow(null_func)
 
 # 管理命令
 cmd_map = {}
@@ -56,8 +58,7 @@ def bind_cmd(cmd_number, cmd_func, arg=(), kw={}):
     cmd_map[cmd_number] = run_func
 
 
-def null_func():
-    return
+
 
 
 def print_cmd(cmd_str, cmd_number, cmd_func=null_func, arg=(), kw={}, normal_style='standard', on_style='onbutton'):
