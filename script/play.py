@@ -27,7 +27,7 @@ def main_play():
     global tgroup, tworld, tscene
     game.clr_cmd()
     game.pline()
-    string = game.align('剧情容量:', 14) + lib.value_bar(tworld.当前进度, tworld.data['剧情容量'])
+    string = game.align('剧情进度:', 14) + lib.value_bar(tworld.当前进度, tworld.data['剧情容量'])
     string += game.align('下一剧情:' + tscene.名称, 30, 'right')
     game.pl(string)
     for p in tgroup.所有人物:
@@ -42,10 +42,16 @@ def main_play():
     game.pl(string, style='title')
 
     def begin_scene():
+        global tscene
         game.call_event('进行剧情_' + tworld.当前剧情['名称'], arg=(tgroup, tworld, tscene))
+        tworld.下一剧情()
+        if tworld.当前进度 <= tworld.data['剧情容量']:
+            tscene=Target_scene(tworld.当前剧情)
         main_play()
 
-    game.pcmd('[100] 开始剧情', 100, begin_scene)
+    if tworld.当前进度<=tworld.data['剧情容量']:
+        game.pcmd('[100] 开始剧情', 100, begin_scene)
+    else:
+        game.p('[100] 开始剧情', style='grey')
     game.pl()
     game.pcmd('[999] 结束试炼', 999, main_func)
-    game.askfor_order()

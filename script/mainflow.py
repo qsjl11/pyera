@@ -77,8 +77,7 @@ def main_func():
     game.pcmd('[101]  开始试炼', 101, script.play.init_play)
     game.p('    ')
     import script.play_cfg
-    # game.pcmd('[102]  试炼设置', 102, script.play_cfg.play_config)
-    game.pcmd('[999]  试炼设置', 999, script.play_cfg.play_config)
+    game.pcmd('[102]  试炼设置', 102, script.play_cfg.play_config)
     game.pl()
     import script.people
     game.pcmd('[103]  人物管理', 103, script.people.people_manager)

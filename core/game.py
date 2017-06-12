@@ -34,6 +34,7 @@ def init(main_flow):
     io.init_style(foreground_c, background_c, onbutton_color, font, fontsize)
     io.style_def('warning', foreground='red', underline=True)
     io.style_def('special', foreground='yellow')
+    io.style_def('grey',foreground='grey')
     def_style = io.style_def
     core.flow.reset_func = reset
 
@@ -230,7 +231,9 @@ def get_unused_cmd_num():
     return unused_cmd_num
 
 # 清除命令，没有参数则清除所有命令
-def clr_cmd(*number):
+def clr_cmd(*number, clr_default_flow=True):
+    if clr_default_flow==True:
+        clear_default_flow()
     if number:
         core.flow.cmd_clear(number)
     else:

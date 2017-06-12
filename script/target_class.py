@@ -77,13 +77,16 @@ class Target_world():
         self.data = world_data
         self._current_process = 1
 
+    def 下一剧情(self):
+        self._current_process+=1
+
     @property
     def 当前进度(self):
         return self._current_process
 
     @property
     def 当前剧情(self):
-        return self.data['剧情列表'][self.当前进度]
+        return self.data['剧情列表'][self._current_process-1]
 
 
 class Target_scene():
