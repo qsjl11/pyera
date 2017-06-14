@@ -9,9 +9,17 @@ gamepath = os.path.split(os.path.realpath(__file__))[0][:-5]
 def gamedata():
     return _gamedata
 
+def is_utf8bom(pathfile):
+    if b'\xef\xbb\xbf' == open(pathfile, mode='rb').read(3):
+        return True
+    return False
 
 def _loadjson(filepath):
-    with open(filepath, 'r', encoding='utf-8') as f:
+    if is_utf8bom(filepath):
+        ec='utf-8-sig'
+    else:
+        ec='utf-8'
+    with open(filepath, 'r', encoding=ec) as f:
         try:
             jsondata = json.loads(f.read())
         except json.decoder.JSONDecodeError:
@@ -68,5 +76,8 @@ def load(filename, selfdata=False):
     except FileNotFoundError:
         print(filepath + '  没有该存档文件')
     if selfdata == False:
+        global _gamedata
         _gamedata.update(data)
     return data
+
+

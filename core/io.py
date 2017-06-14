@@ -27,9 +27,6 @@ order_swap = None
 
 def _input_evnet_set(order):
     putOrder(order)
-    # global order_swap
-    # order_swap = order
-    # input_evnet.set()
 
 
 def getorder():

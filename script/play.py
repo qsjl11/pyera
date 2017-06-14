@@ -17,6 +17,7 @@ def init_play():
     if game.data['试炼设置']['试炼队伍'] == None or game.data['试炼设置']['试炼世界'] == None:
         game.pl('没有指定[试炼队伍]或[试炼世界]，请于[试炼设置]中选择', 'notice')
         main_func()
+        return
     tgroup = Target_group(game.data['试炼设置']['试炼队伍'])
     tworld = Target_world(game.data['试炼设置']['试炼世界'])
     tscene = Target_scene(tworld.当前剧情)

@@ -35,7 +35,7 @@ def open_menu():
     # game.pl()
     # game.pcmd('[002]  读取游戏', 2, saveload.load_func, arg=(open_menu,))
     # game.askfor_order()
-
+    game.clr_cmd()
     game.pline()
     game.pcmd('[001]  开始游戏', 1)
     game.pl()

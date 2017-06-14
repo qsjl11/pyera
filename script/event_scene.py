@@ -28,7 +28,7 @@ def 调整剧情_赤手蠢贼(tpl):
 def 进行剧情_赤手蠢贼(tgroup, tworld, tscene):
     game.pl('草丛里蹦出三个蠢贼，赤手空拳的奔向' + tgroup.data['队伍名称'])
     target=tgroup.随机一人
-    game.pl(target.姓名 + '还击')
+    game.plwait(target.姓名 + '还击')
     re = target.近战鉴定(tscene.难度 * 10)
     if re == True:
         game.pl('三个贼徒被打跑了')

@@ -98,27 +98,29 @@ def order_deal(flag='order', print_order=True):
     __skip_flag__ = False
     while True:
         time.sleep(0.01)
-        order = io.getorder()
-        if order == '_reset_this_game_':
-            reset_func()
-        if print_order == True and order != '' and order != 'skip_all_wait':
-            io.print('\n' + order + '\n')
-
-        if flag == 'str':
-            return order
-
-        if flag == 'console':
-            # TODO add_console_method
-            exec(order)
-
-        if flag == 'order' and order.isdigit():
-            if _cmd_valid(int(order)):
-                _cmd_deal(int(order))
+        while not io._order_queue.empty():
+            order = io.getorder()
+            if order == '_reset_this_game_':
+                reset_func()
                 return
-            else:
-                global tail_deal_cmd_func
-                tail_deal_cmd_func(int(order))
-                return
+            if print_order == True and order != '' and order != 'skip_all_wait' and order != 'skip_one_wait':
+                io.print('\n' + order + '\n')
+
+            if flag == 'str':
+                return order
+
+            if flag == 'console':
+                # TODO add_console_method
+                exec(order)
+
+            if flag == 'order' and order.isdigit():
+                if _cmd_valid(int(order)):
+                    _cmd_deal(int(order))
+                    return
+                else:
+                    global tail_deal_cmd_func
+                    tail_deal_cmd_func(int(order))
+                    return
 
 
 def askfor_str(donot_return_null_str=True, print_order=False):
@@ -143,7 +145,9 @@ def askfor_int(print_order=False):
 
 def askfor_wait():
     global __skip_flag__
-    if __skip_flag__ == False:
-        re = askfor_str(donot_return_null_str=False)
+    while __skip_flag__ == False:
+        re = askfor_str(donot_return_null_str=True)
+        if re == 'skip_one_wait':
+            break
         if re == 'skip_all_wait':
             __skip_flag__ = True

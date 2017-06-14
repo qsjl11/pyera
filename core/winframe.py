@@ -10,6 +10,7 @@ import uuid
 # 显示主框架
 root = Tk()
 root.title("pyera")
+root.geometry('1000x720+0+0')
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 
@@ -31,7 +32,7 @@ s_vertical.grid(column=1, row=0, sticky=(N, E, S))
 
 # 输入栏
 order = StringVar()
-inputbox = ttk.Entry(mainframe, textvariable=order)
+inputbox = ttk.Entry(mainframe, textvariable=order, font = "微软雅黑 13")
 inputbox.grid(column=0, row=1, sticky=(W, E, S))
 
 # 构建菜单栏
@@ -39,8 +40,10 @@ root.option_add('*tearOff', FALSE)
 menubar = Menu(root)
 root['menu'] = menubar
 menufile = Menu(menubar)
+menutest = Menu(menubar)
 menuother = Menu(menubar)
 menubar.add_cascade(menu=menufile, label=' 文件')
+menubar.add_cascade(menu=menutest, label=' 测试')
 menubar.add_cascade(menu=menuother, label=' 其他')
 
 
@@ -52,12 +55,23 @@ def reset(*args):
 menufile.add_command(label='重新开始', command=reset)
 menufile.add_command(label='退出', command=lambda: sys.exit())
 
+def on_textbox_edit():
+    textbox.config(insertbackground='black')
+    textbox.unbind("<Key>")
+
+def off_textbox_edit():
+    textbox.config(insertbackground='white')
+    textbox.bind("<Key>", lambda e: "break")
+
+menutest.add_command(label='启动显式编辑', command=on_textbox_edit)
+menutest.add_command(label='关闭显式编辑', command=off_textbox_edit)
+
 menuother.add_command(label='设置')
 menuother.add_command(label='关于')
-menuother.add_command(label='测试')
 
 input_event_func = None
-
+send_order_state = False
+# when false, send 'skip'; when true, send cmd
 
 def send_input(*args):
     global input_event_func
@@ -67,7 +81,10 @@ def send_input(*args):
 
 
 def click(*args):
-    order.set('')
+    global send_order_state
+    if send_order_state==False:
+        order.set('skip_one_wait')
+    send_order_state=False
     send_input()
 
 
@@ -76,7 +93,7 @@ def click_skip(*args):
     send_input()
 
 
-# textbox.bind("<Key>", lambda e: "break")
+off_textbox_edit()
 textbox.bind("<1>", click)
 textbox.bind("<3>", click_skip)
 root.bind('<Return>', send_input)
@@ -125,6 +142,7 @@ def seeend():
 
 
 def set_background(color):
+    textbox.config(insertbackground=color)
     textbox.configure(background=color, selectbackground="red")
 
 
@@ -209,8 +227,9 @@ def _io_print_cmd(cmd_str, cmd_number, normal_style='standard', on_style='onbutt
     cmd_tag_map[cmd_number] = cmd_tagname
 
     def send_cmd(*args):
+        global send_order_state
+        send_order_state=True
         order.set(cmd_number)
-        send_input()
 
     def enter_func(*args):
         textbox.tag_remove(normal_style, textbox.tag_ranges(cmd_tagname)[0], textbox.tag_ranges(cmd_tagname)[1])

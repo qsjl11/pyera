@@ -131,7 +131,7 @@ def pl(string='', style='standard'):
 
 def pline(sample='▃', style='standard'):
     """输出一条横线"""
-    pl(sample * 45, style)
+    pl(sample * 43, style)
 
 
 def pwarn(string, style='warning'):
