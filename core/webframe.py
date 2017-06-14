@@ -103,7 +103,7 @@ def read_queue():
             if 'clear_cmd' in jsonstr.keys() and jsonstr['clear_cmd'] == 'true':
                 _clear_screen()
             if 'clearorder_cmd' in jsonstr.keys() and jsonstr['clearorder_cmd'] == 'true':
-                clearorder()
+                _clearorder()
             if 'clearcmd_cmd' in jsonstr.keys():
                 cmd_nums = jsonstr['clearcmd_cmd']
                 if cmd_nums == "all":
@@ -178,7 +178,7 @@ def setorder(orderstr):
     order = orderstr
 
 
-def clearorder():
+def _clearorder():
     jsonstr = _new_json()
     jsonstr['clearorder_cmd'] = 'true'
     socketio.emit('game_display', json.dumps(jsonstr, ensure_ascii=False), namespace='/test')

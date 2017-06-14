@@ -50,6 +50,8 @@ def init(main_flow):
                 _have_run=True
             askfor_order()
             core.flow.call_default_flow()
+            if core.flow.exit_flag==True:
+                break
 
     run_main_flow()
 

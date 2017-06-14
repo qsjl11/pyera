@@ -90,7 +90,7 @@ def _cmd_valid(order_number):
 
 __skip_flag__ = False
 reset_func = None
-
+exit_flag =False
 
 # 处理输入
 def order_deal(flag='order', print_order=True):
@@ -100,6 +100,10 @@ def order_deal(flag='order', print_order=True):
         time.sleep(0.01)
         while not io._order_queue.empty():
             order = io.getorder()
+            if order == '_exit_game_':
+                global exit_flag
+                exit_flag=True
+                return
             if order == '_reset_this_game_':
                 reset_func()
                 return

@@ -56,6 +56,7 @@ def run(open_func):
         core.webframe._run()
     if core.cfg.platform == 'win':
         core.winframe._run()
+    _order_queue.put_nowait('_exit_game_')
 
 
 def putQ(message):
@@ -142,6 +143,10 @@ def set_background(color):
     jsonstr['bgcolor'] = color
     putQ(json.dumps(jsonstr, ensure_ascii=False))
 
+def clearorder():
+    jsonstr = new_json()
+    jsonstr['clearorder_cmd'] = 'true'
+    putQ(json.dumps(jsonstr, ensure_ascii=False))
 
 # ############################################################
 

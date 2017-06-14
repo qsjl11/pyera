@@ -51,9 +51,11 @@ def reset(*args):
     order.set('_reset_this_game_')
     send_input()
 
+def quit(*args):
+    root.destroy()
 
 menufile.add_command(label='重新开始', command=reset)
-menufile.add_command(label='退出', command=lambda: sys.exit())
+menufile.add_command(label='退出', command=quit)
 
 def on_textbox_edit():
     textbox.config(insertbackground='black')
@@ -77,7 +79,7 @@ def send_input(*args):
     global input_event_func
     order = _getorder()
     input_event_func(order)
-    clearorder()
+    _clearorder()
 
 
 def click(*args):
@@ -111,7 +113,7 @@ def read_queue():
         if 'clear_cmd' in jsonstr.keys() and jsonstr['clear_cmd'] == 'true':
             _clear_screen()
         if 'clearorder_cmd' in jsonstr.keys() and jsonstr['clearorder_cmd'] == 'true':
-            clearorder()
+            _clearorder()
         if 'clearcmd_cmd' in jsonstr.keys():
             cmd_nums = jsonstr['clearcmd_cmd']
             if cmd_nums == "all":
@@ -208,7 +210,7 @@ def setorder(orderstr):
     order.set(orderstr)
 
 
-def clearorder():
+def _clearorder():
     order.set('')
 
 
