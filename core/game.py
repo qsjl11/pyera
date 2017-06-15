@@ -114,6 +114,7 @@ last_char = '\n'
 
 
 def p(string, style='standard'):
+    string=str(string)
     global last_char
     if len(string) > 0:
         last_char = string[-1:]
