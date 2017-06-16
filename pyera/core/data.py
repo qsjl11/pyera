@@ -1,10 +1,10 @@
 # -*- coding: UTF-8 -*-
+from core.cfg import gamepath
 import json
 import pickle
 import os
 
 _gamedata = {}
-gamepath = os.path.split(os.path.realpath(__file__))[0][:-5]
 
 def gamedata():
     return _gamedata
@@ -40,14 +40,13 @@ def _loaddir(datapath):
 
 
 def init():
-    gamepath = os.path.split(os.path.realpath(__file__))[0][:-5]
+    global gamepath
     datapath = gamepath + '\\data'
     _loaddir(datapath)
 
 
 def _get_savefilename_path(filename):
-    gamepath = os.path.split(os.path.realpath(__file__))[0][:-5]
-    print(os.path.split(os.path.realpath(__file__))[0])
+    global gamepath
     savepath = gamepath + '\\save'
     if not os.path.exists(savepath):
         os.makedirs(savepath)

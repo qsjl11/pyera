@@ -6,9 +6,10 @@ import random
 
 
 def test():
-
+    import math
+    game.p(math.exp(3))
     return
-    game.p(str(game.data['core_event_sort']['生成人物']['职业处理']))
+
 
 
 def open_func(*args):
@@ -24,7 +25,7 @@ def open_func(*args):
         game.data['队伍列表'] = []
     import script.play_cfg
     script.play_cfg.init()
-    game.pl('pyera 启动中，准备完成')
+    game.pl(f'pyera 启动中，准备完成')
     test()
     open_menu()
 
