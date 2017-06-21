@@ -22,6 +22,45 @@ flowthread = None
 open_func = None
 sysprint = print
 
+# 启动
+def _run():
+    # socketio.run(app, host='0.0.0.0')
+    socketio.run(app)
+
+@app.route('/')
+def interactive():
+    return render_template('index.html')
+
+
+@socketio.on('run', namespace='/test')
+def test_connect(*args):
+    global gamebegin_flag
+    global flowthread
+    global open_func
+
+    try:
+        if flowthread == None:
+            flowthread = socketio.start_background_task(target=read_queue)
+
+    except Exception as e:
+        return str(e)
+
+
+@socketio.on('dealorder', namespace='/test')
+def test_message(value):
+    sysprint('dealorder')
+    try:
+        setorder(value)
+        send_input()
+    except Exception as e:
+        return str(e)
+
+
+@socketio.on('connect', namespace='/test')
+def test_connect():
+    sysprint('connected')
+    setorder('_reset_this_game_')
+    send_input()
 
 # #######################################################################
 # json 构建函数
@@ -72,16 +111,11 @@ def _style_json(style_name, foreground, background, font, fontsize, bold, underl
 # #######################################################################
 # 运行逻辑
 
-def _run():
-    # socketio.run(app, host='0.0.0.0')
-    socketio.run(app)
-
-
 def send_input(*args):
     global input_event_func
     order = getorder()
     input_event_func(order)
-    clearorder()
+    _clearorder()
 
 
 def set_background(color):
@@ -207,37 +241,4 @@ def _io_clear_cmd(*cmd_numbers):
 ####################################################################
 
 
-@app.route('/')
-def interactive():
-    return render_template('index.html')
 
-
-@socketio.on('run', namespace='/test')
-def test_connect(*args):
-    global gamebegin_flag
-    global flowthread
-    global open_func
-
-    try:
-        if flowthread == None:
-            flowthread = socketio.start_background_task(target=read_queue)
-
-    except Exception as e:
-        return str(e)
-
-
-@socketio.on('dealorder', namespace='/test')
-def test_message(value):
-    sysprint('dealorder')
-    try:
-        setorder(value)
-        send_input()
-    except Exception as e:
-        return str(e)
-
-
-@socketio.on('connect', namespace='/test')
-def test_connect():
-    sysprint('connected')
-    setorder('_reset_this_game_')
-    send_input()

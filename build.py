@@ -10,14 +10,14 @@ build_bat_str = \
     r'rd /s/q pyera_dist'+'\n' \
     r''+'\n' \
     r'md pyera_dist'+'\n' \
-    r'cd pyera'+'\n' \
+    r'cd pyera_engine'+'\n' \
     r'python setup.py build'+'\n' \
     r'xcopy build ..\pyera_dist /e'+'\n' \
     r''+'\n' \
     r'rd /s/q build'+'\n' \
     r'cd ..\pyera_dist'+'\n' \
-    r'if exist .\exe.win32-3.6 ren .\exe.win32-3.6 pyera'+'\n' \
-    r'if exist .\exe.win32-3.5 ren .\exe.win32-3.5 pyera'+'\n' \
+    r'if exist .\exe.win32-3.6 ren .\exe.win32-3.6 pyera_engine'+'\n' \
+    r'if exist .\exe.win32-3.5 ren .\exe.win32-3.5 pyera_engine'+'\n' \
     r''+'\n' \
     r'cd ..'+'\n' \
     r'md .\pyera_dist\data'+'\n' \
@@ -33,11 +33,11 @@ pyeraRelease_bat_str=\
     r':begin'+'\n' \
     r''+'\n' \
     r'@echo off'+'\n' \
-    r'pyera\pyera.exe'+'\n' \
+    r'pyera_engine\pyera.exe'+'\n' \
     r'exit'+'\n'
 
 pyeraDebug_bat_str=\
-    r'pyera\pyera.exe'+'\n' \
+    r'pyera_engine\pyera.exe'+'\n' \
     r'exit'+'\n'
 
 with open('pyeraDebug.bat', 'wt') as f:
