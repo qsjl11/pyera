@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
 import core.game as game
-import script.saveload as saveload
 import script.lib as lib
 import random
 
@@ -47,7 +46,7 @@ def open_menu():
         if order==1:
             newgame_func()
         if order==2:
-            saveload.load_func(open_menu)
+            lib.load_func(open_menu, main_func)
 
 
 def newgame_func():
@@ -89,7 +88,7 @@ def main_func():
     import script.world
     game.pcmd('[105]  世界管理', 105, script.world.world_manager)
     game.pl()
-    game.pcmd('[111]  保存游戏', 111, saveload.save_func)
+    game.pcmd('[111]  保存游戏', 111, lib.save_func, arg=(main_func,))
     game.p('    ')
-    game.pcmd('[112]  读取游戏', 112, saveload.load_func)
+    game.pcmd('[112]  读取游戏', 112, lib.load_func, arg=(main_func, main_func))
 
