@@ -88,8 +88,6 @@ class IterExceptNoneInList():
 
 
 import os
-import script.mainflow
-
 
 def load_func(return_func, next_func):
     game.clr_cmd()
