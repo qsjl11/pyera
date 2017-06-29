@@ -150,8 +150,8 @@ def askfor_int(print_order=False):
 def askfor_wait():
     global __skip_flag__
     while __skip_flag__ == False:
-        re = askfor_str(donot_return_null_str=True)
-        if re == 'skip_one_wait':
+        re = askfor_str(donot_return_null_str=False)
+        if re == 'skip_one_wait'or re == '':
             break
         if re == 'skip_all_wait':
             __skip_flag__ = True
