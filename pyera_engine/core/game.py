@@ -141,6 +141,7 @@ def pline(sample='▃', style='standard'):
 def pwarn(string, style='warning'):
     """输出警告"""
     pl(string, style)
+    print(string)
 
 
 def pwait(string, style='standard'):
