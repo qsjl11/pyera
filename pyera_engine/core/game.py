@@ -257,7 +257,7 @@ data = core.data.gamedata()
 # 获得存档目录
 savedir = core.data._get_savefilename_path('')[:-6]
 
-# 保存数据集合到文件, 也可将可以json序列化的data保存到某个文件中
+# 保存数据集合到文件, 也可将可以game.data序列化保存到某个文件中
 save = core.data.save
 
 # 从文件中加载数据集合, selfdata为True时，只返回反序列化之后的数据，不会将数据加载到gamedata

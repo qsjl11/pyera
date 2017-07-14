@@ -1,7 +1,11 @@
 # -*- coding: UTF-8 -*-
 from core.cfg import gamepath
 import json
-import pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 import os
 
 _gamedata = {}
