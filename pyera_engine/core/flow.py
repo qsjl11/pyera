@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-import core.io as io
+import core.pyio as io
 import time
 
 def null_func():

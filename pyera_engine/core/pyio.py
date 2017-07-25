@@ -1,14 +1,14 @@
 # -*- coding: UTF-8 -*-
 
-import core.cfg
+import core.pycfg
 
 sys_print = print
 
-if core.cfg.platform == 'web':
+if core.pycfg.platform == 'web':
     str = 'from core.webframe import *'
     exec(str)
 
-if core.cfg.platform == 'win':
+if core.pycfg.platform == 'win':
     from core.winframe import *
 
 import threading
@@ -52,9 +52,9 @@ def run(open_func):
     global _flowthread
     _flowthread = threading.Thread(target=open_func, name='flowthread')
     _flowthread.start()
-    if core.cfg.platform == 'web':
+    if core.pycfg.platform == 'web':
         core.webframe._run()
-    if core.cfg.platform == 'win':
+    if core.pycfg.platform == 'win':
         core.winframe._run()
     _order_queue.put_nowait('_exit_game_')
 

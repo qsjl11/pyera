@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
-import core.cfg
-import core.io as io
+import core.pycfg
+import core.pyio as io
 import core.flow
 import core.data
 import os
@@ -63,7 +63,7 @@ def run(main_func):
     def _init():
         init(main_func)
 
-    core.io.run(_init)
+    core.pyio.run(_init)
 
 
 def console_log(string):

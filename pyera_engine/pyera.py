@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
-import core.cfg
+import core.pycfg
 
-core.cfg.platform = 'win'
+core.pycfg.platform = 'win'
 import core.game
 
 # import script.mainflow
